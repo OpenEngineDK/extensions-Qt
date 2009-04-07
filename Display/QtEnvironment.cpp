@@ -8,6 +8,7 @@
 //--------------------------------------------------------------------
 
 #include <Display/QtEnvironment.h>
+#include <Logging/Logger.h>
 
 namespace OpenEngine {
 namespace Display {
@@ -23,7 +24,9 @@ QtEnvironment::QtEnvironment(int width,
                              int depth,
                              FrameOption options) {
 
-    app = new QApplication(0,0);
+    //argc inserted to avoid: QApplication: Invalid Display* argument
+    int argc = 0;
+    app = new QApplication(argc,0);
     top = new QWidget();
     gl  = new QGLWidget(top);
     lay = new QHBoxLayout;
@@ -52,7 +55,10 @@ QtEnvironment::~QtEnvironment() {
 }
 
 void QtEnvironment::Handle(Core::InitializeEventArg arg) {
-
+    // version
+    int major = QT_VERSION >> 16;
+    int minor = (QT_VERSION >> 8) & 0xFF;
+    logger.info << "Qt version: " << major << "." << minor << logger.end;
 }
 
 void QtEnvironment::Handle(Core::ProcessEventArg arg) {
