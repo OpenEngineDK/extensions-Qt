@@ -78,11 +78,17 @@ public:
         QtKeyboard* keyboard;
         QtJoystick* joystick;
 
+        MouseState state;
+
     public:
         GLWidget(QWidget* parent) : QGLWidget(parent) {
             mouse    = new QtMouse();
             keyboard = new QtKeyboard();
             joystick = new QtJoystick();
+
+            state.x = 0;
+            state.y = 0;
+            state.buttons = BUTTON_NONE;
         }
 
         Key ConvertKey(Qt::Key key) {
@@ -179,6 +185,7 @@ public:
             return rtn;
         }
 
+        // function triggered by Qt
         void keyPressEvent(QKeyEvent* e) {
             //logger.info << "press event" << logger.end;
             KeyboardEventArg arg;
@@ -193,7 +200,8 @@ public:
             keyboard->ke.Notify( arg );
         }
         
-        void keyReleaseEvent(QKeyEvent *e) {
+        // function triggered by Qt
+        void keyReleaseEvent(QKeyEvent* e) {
             //logger.info << "release event" << logger.end;
             KeyboardEventArg arg;
             arg.type = EVENT_RELEASE;
@@ -207,6 +215,113 @@ public:
             keyboard->ke.Notify( arg );
         }
 
+        MouseButton ConvertMouseButton(Qt::MouseButtons buttons) {
+            MouseButton rtn = BUTTON_NONE;
+
+            if (buttons == Qt::NoButton)
+                return rtn;
+            if (buttons & Qt::LeftButton) {
+                rtn = MouseButton(rtn | BUTTON_LEFT);
+                buttons = Qt::MouseButtons(buttons & ~Qt::LeftButton);
+                //logger.info << "left mouse button" << logger.end;
+            }
+            if (buttons & Qt::RightButton) {
+                rtn = MouseButton(rtn | BUTTON_RIGHT);
+                buttons = Qt::MouseButtons(buttons & ~Qt::RightButton);
+                //logger.info << "right mouse button" << logger.end;
+            }
+            if (buttons & Qt::MidButton) {
+                rtn = MouseButton(rtn | BUTTON_MIDDLE);
+                buttons = Qt::MouseButtons(buttons & ~Qt::MidButton);
+                //logger.info << "middle mouse button" << logger.end;
+            }
+            if (buttons!=0)
+                logger.warning <<
+                    "UNKNOWN MOUSE BUTTON, not handled in Qt key handler"
+                               << logger.end;
+            return rtn;
+        }
+
+        // function triggered by Qt
+        void mousePressEvent(QMouseEvent* e) {
+            // set mouse position and get button modifiers
+            state.buttons = ConvertMouseButton(e->buttons());
+            state.x = e->x();
+            state.y = e->y();
+
+            // create a mouse event
+            MouseButtonEventArg marg;
+            marg.state = state;
+            marg.button = ConvertMouseButton(e->button());
+            marg.type = EVENT_PRESS;
+
+            // send the event
+            mouse->mbe.Notify( marg );
+            //logger.info << "mouse button pressed" << logger.end;
+        }
+
+        // function triggered by Qt
+        void mouseReleaseEvent(QMouseEvent* e) {
+            // set mouse position and get button modifiers
+            state.buttons = ConvertMouseButton(e->buttons());
+            state.x = e->x(); // todo: should it be e->globalX() ???
+            state.y = e->y(); // todo: should it be e->globalY() ???
+
+            // create a mouse event
+            MouseButtonEventArg marg;
+            marg.state = state;
+            marg.button = ConvertMouseButton(e->button());
+            marg.type = EVENT_RELEASE;
+
+            // send the event
+            mouse->mbe.Notify( marg );
+            //logger.info << "mouse button released" << logger.end;
+        }
+
+        void wheelEvent(QWheelEvent* e) {
+            // set mouse position and get button modifiers
+            state.buttons = ConvertMouseButton(e->buttons());
+            state.x = e->x();
+            state.y = e->y();
+
+            // create a mouse event
+            MouseButtonEventArg marg;
+            marg.state = state;
+
+            int delta = e->delta(); //todo:use the delta to generate more events
+            if (delta > 0) {
+                marg.button = BUTTON_WHEEL_UP;
+                //logger.info << "mouse scroll up" << logger.end;
+            } else {
+                marg.button = BUTTON_WHEEL_DOWN;
+                //logger.info << "mouse scroll down" << logger.end;
+            }
+            marg.type = EVENT_ANY; // todo: ?!?
+
+            // send the event
+            mouse->mbe.Notify( marg );
+        }
+
+
+        void mouseMoveEvent(QMouseEvent* e) {
+            // set mouse position and get button modifiers
+            MouseMovedEventArg mmarg;
+            state.buttons = mmarg.buttons;
+            mmarg.x = e->x();
+            mmarg.y = e->y();
+            mmarg.dx = mmarg.x - state.x;
+            mmarg.dy = mmarg.y - state.y;
+            state.x = mmarg.x;
+            state.y = mmarg.y;
+            mouse->mme.Notify(mmarg);
+            //logger.info << "x: " << mmarg.x << " y: " << mmarg.y << logger.end;
+            //logger.info << "dx: " << mmarg.dx << " dy: " << mmarg.dy << logger.end;
+        }
+
+        /*
+        void resizeEvent() {
+        }*/
+
         IMouse* GetMouse() {
             return mouse;
         }
@@ -218,7 +333,6 @@ public:
         IJoystick* GetJoystick() {
             return joystick;
         }
-
     };
 
     QtEnvironment(int width  = 640,

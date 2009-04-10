@@ -40,6 +40,7 @@ QtEnvironment::QtEnvironment(int width,
     gl->setFixedSize(width,height);
     //gl->grabKeyboard();
     gl->setFocus();
+    gl->setMouseTracking(true);
 }
 
 QtEnvironment::~QtEnvironment() {
