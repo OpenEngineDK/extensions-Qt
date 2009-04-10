@@ -16,6 +16,7 @@
 #include <Display/IEnvironment.h>
 #include <Display/QtFrame.h>
 #include <Core/EngineEvents.h>
+#include <Logging/Logger.h>
 
 // remove this!!
 #include <Devices/IMouse.h>
@@ -71,6 +72,42 @@ public:
         IEvent<JoystickAxisEventArg>&   JoystickAxisEvent();
     };
 
+    class GLWidget : public QGLWidget {
+    private:
+        QtMouse*    mouse;
+        QtKeyboard* keyboard;
+        QtJoystick* joystick;
+
+    public:
+        GLWidget(QWidget* parent) : QGLWidget(parent) {
+            mouse    = new QtMouse();
+            keyboard = new QtKeyboard();
+            joystick = new QtJoystick();
+        }
+
+        void keyPressEvent(QKeyEvent *e) {
+            KeyboardEventArg arg;
+            //todo: set sym, mod, type
+            keyboard->ke.Notify( arg );
+            logger.info << "key press event" << logger.end;
+        }
+        
+        //void keyReleaseEvent(QKeyEvent *e) {}
+
+        IMouse* GetMouse() {
+            return mouse;
+        }
+
+        IKeyboard* GetKeyboard() {
+            return keyboard;
+        }
+
+        IJoystick* GetJoystick() {
+            return joystick;
+        }
+
+    };
+
     QtEnvironment(int width  = 640,
                   int height = 480,
                   int depth  = 32,
@@ -91,14 +128,11 @@ private:
 
     // private device members
     QtFrame*    frame;
-    QtMouse*    mouse;
-    QtKeyboard* keyboard;
-    QtJoystick* joystick;
 
     // qt widgets
     QApplication* app;
     QWidget*      top;
-    QGLWidget*    gl;
+    GLWidget*    gl;
     QHBoxLayout*  lay;
 
 };

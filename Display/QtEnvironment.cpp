@@ -28,25 +28,26 @@ QtEnvironment::QtEnvironment(int width,
     int argc = 0;
     app = new QApplication(argc,0);
     top = new QWidget();
-    gl  = new QGLWidget(top);
+    gl  = new GLWidget(top);
     lay = new QHBoxLayout;
 
     frame    = new QtFrame(width, height, depth, options);
-    mouse    = new QtMouse();
-    keyboard = new QtKeyboard();
-    joystick = new QtJoystick();
 
     lay->addWidget(gl);
     top->setLayout(lay);
     top->setWindowTitle("My Window");
     top->show();
-
+    gl->setFixedSize(width,height);
+    //gl->grabKeyboard();
+    gl->setFocus();
 }
 
 QtEnvironment::~QtEnvironment() {
+    /*
     delete joystick;
     delete keyboard;
     delete mouse;
+    */
     delete frame;
     delete lay;
     delete gl;
@@ -75,15 +76,15 @@ IFrame& QtEnvironment::GetFrame() {
 }
 
 IMouse* QtEnvironment::GetMouse() {
-    return mouse;
+    return gl->GetMouse();
 }
 
 IKeyboard* QtEnvironment::GetKeyboard() {
-    return keyboard;
+    return gl->GetKeyboard();
 }
 
 IJoystick* QtEnvironment::GetJoystick() {
-    return joystick;
+    return gl->GetJoystick();
 }
 
 // ============================================================
