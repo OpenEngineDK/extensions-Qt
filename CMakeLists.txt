@@ -23,7 +23,7 @@ ADD_LIBRARY(Extensions_Qt
   Display/QtEnvironment.cpp
   Display/QtFrame.h
   Display/QtFrame.cpp
-  Display/QtResponder.cpp
+#  Display/QtResponder.cpp
   Display/RenderStateGUI.cpp
   Display/SceneGraphGUI.cpp
   Utils/FPSGUI.cpp
