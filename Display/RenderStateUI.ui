@@ -1,0 +1,152 @@
+<ui version="4.0" >
+ <class>RenderStateGUI</class>
+ <widget class="QWidget" name="RenderStateGUI" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>179</width>
+    <height>192</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout" >
+   <item>
+    <widget class="QCheckBox" name="wireframeCheck" >
+     <property name="text" >
+      <string>Wireframe</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="backfaceCheck" >
+     <property name="text" >
+      <string>Backface</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="lightCheck" >
+     <property name="text" >
+      <string>Light</string>
+     </property>
+     <property name="checked" >
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="depthCheck" >
+     <property name="text" >
+      <string>Depth Test</string>
+     </property>
+     <property name="checked" >
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="textureCheck" >
+     <property name="text" >
+      <string>Texture</string>
+     </property>
+     <property name="checked" >
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>wireframeCheck</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>RenderStateGUI</receiver>
+   <slot>SetWireframe(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>92</x>
+     <y>46</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>105</x>
+     <y>0</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>backfaceCheck</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>RenderStateGUI</receiver>
+   <slot>SetBackface(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>102</x>
+     <y>85</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>89</x>
+     <y>95</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>textureCheck</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>RenderStateGUI</receiver>
+   <slot>SetTexture(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>69</x>
+     <y>146</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>159</x>
+     <y>173</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lightCheck</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>RenderStateGUI</receiver>
+   <slot>SetLight(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>104</x>
+     <y>124</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>63</x>
+     <y>11</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>depthCheck</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>RenderStateGUI</receiver>
+   <slot>SetDepth(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>92</x>
+     <y>129</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>89</x>
+     <y>95</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>SetWireframe(bool)</slot>
+  <slot>SetBackface(bool)</slot>
+  <slot>SetTexture(bool)</slot>
+  <slot>SetLight(bool)</slot>
+  <slot>SetDepth(bool)</slot>
+ </slots>
+</ui>
