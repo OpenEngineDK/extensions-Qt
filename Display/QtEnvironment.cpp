@@ -9,6 +9,8 @@
 
 #include <Display/QtEnvironment.h>
 #include <Logging/Logger.h>
+//#include <Display/QtResponder.h>
+
 
 namespace OpenEngine {
 namespace Display {
@@ -31,16 +33,42 @@ QtEnvironment::QtEnvironment(int width,
     gl  = new GLWidget(top);
     lay = new QHBoxLayout;
 
+
+    //    QWidget *w1 = new QWidget();
+    QVBoxLayout *l = new QVBoxLayout();
+    leftLay = l;
+    //QLineEdit *le = new QLineEdit();
+    //QPushButton *btn = new QPushButton();
+
+    //QtResponder *resp = new QtResponder();
+
+    //QObject::connect(btn, SIGNAL(clicked()), resp, SLOT(doStuff()));
+
+    // l->addWidget(le);
+    // l->addWidget(btn);
+    //    w1->setLayout(l);
+    //le->show();
+
     frame    = new QtFrame(width, height, depth, options);
 
+    lay->addLayout(l);
     lay->addWidget(gl);
+
+    gl->setFixedSize(width,height);
+    
     top->setLayout(lay);
     top->setWindowTitle("My Window");
+    //top->move(0,0);
     top->show();
-    gl->setFixedSize(width,height);
+
+
     //gl->grabKeyboard();
     gl->setFocus();
     gl->setMouseTracking(true);
+}
+
+void QtEnvironment::AddWidget(QWidget* w) {
+    leftLay->addWidget(w);
 }
 
 QtEnvironment::~QtEnvironment() {
@@ -66,6 +94,10 @@ void QtEnvironment::Handle(Core::InitializeEventArg arg) {
 void QtEnvironment::Handle(Core::ProcessEventArg arg) {
     app->processEvents();
     gl->swapBuffers();
+
+    ((SDLJoystickOnly*)GetJoystick())->Handle(arg);
+          
+    //logger.info << SDL_JoystickGetAxis(firstStick, 0) << logger.end;
 }
 
 void QtEnvironment::Handle(Core::DeinitializeEventArg arg) {
@@ -92,7 +124,7 @@ IJoystick* QtEnvironment::GetJoystick() {
 // Qt Mouse
 // ============================================================
 
-QtEnvironment::QtMouse::QtMouse() {
+    QtEnvironment::QtMouse::QtMouse(QWidget *w) : widget(w) {
 
 }
 
@@ -104,23 +136,32 @@ IEvent<MouseButtonEventArg>& QtEnvironment::QtMouse::MouseButtonEvent() {
     return mbe;
 }
 
-void QtEnvironment::QtMouse::HideCursor() {
-
+void QtEnvironment::QtMouse::HideCursor() {    
+    widget->setCursor(Qt::BlankCursor);
 }
 
 void QtEnvironment::QtMouse::ShowCursor() {
-
+    widget->setCursor(Qt::ArrowCursor);
 }
 
 void QtEnvironment::QtMouse::SetCursor(int x, int y) {
+    // invariant, we know that state contains the most current
+    // position
 
+    //QPoint absPoint = QCursor::pos();
+    // QPoint origin(absPoint.x() - state.x,
+    //               absPoint.y() - state.y);
+
+    if (widget->hasFocus()) {
+
+        QPoint p = widget->mapToGlobal(QPoint(x,y));
+
+    
+        QCursor::setPos(p);
+    }
 }
 
 MouseState QtEnvironment::QtMouse::GetState() {
-    MouseState state;
-    state.x = 0;
-    state.y = 0;
-    state.buttons = BUTTON_NONE;
     return state;
 }
 

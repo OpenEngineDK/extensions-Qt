@@ -24,6 +24,8 @@
 #include <Devices/IJoystick.h>
 #include <Core/Event.h>
 
+#include <Devices/SDLJoystickOnly.h>
+
 namespace OpenEngine {
 namespace Display {
 
@@ -42,9 +44,13 @@ public:
     // classes for all devices (with private constructors)
     class QtMouse : public IMouse {
         friend class QtEnvironment;
-        QtMouse();
+        QWidget* widget;
+        
+    public:
+        QtMouse(QWidget* w);
         Event<MouseMovedEventArg>  mme;
         Event<MouseButtonEventArg> mbe;
+        MouseState state;
     public:
         IEvent<MouseMovedEventArg>&  MouseMovedEvent();
         IEvent<MouseButtonEventArg>& MouseButtonEvent();
@@ -56,6 +62,7 @@ public:
 
     class QtKeyboard : public IKeyboard {
         friend class QtEnvironment;
+    public:
         QtKeyboard();
         Event<KeyboardEventArg> ke;
     public:
@@ -64,6 +71,7 @@ public:
 
     class QtJoystick : public IJoystick {
         friend class QtEnvironment;
+    public:
         QtJoystick();
         Event<JoystickButtonEventArg> jbe;
         Event<JoystickAxisEventArg>   jae;
@@ -76,19 +84,25 @@ public:
     private:
         QtMouse*    mouse;
         QtKeyboard* keyboard;
-        QtJoystick* joystick;
+        SDLJoystickOnly* joystick;
 
-        MouseState state;
+        
 
     public:
         GLWidget(QWidget* parent) : QGLWidget(parent) {
-            mouse    = new QtMouse();
-            keyboard = new QtKeyboard();
-            joystick = new QtJoystick();
+            setFocusPolicy(Qt::StrongFocus);
 
-            state.x = 0;
-            state.y = 0;
-            state.buttons = BUTTON_NONE;
+            mouse    = new QtMouse(this);
+            keyboard = new QtKeyboard();
+
+            //joystick = new QtJoystick();
+            joystick = new SDLJoystickOnly();
+
+
+            mouse->state.x = 0;
+            mouse->state.y = 0;
+            mouse->state.buttons = BUTTON_NONE;
+
         }
 
         Key ConvertKey(Qt::Key key) {
@@ -178,9 +192,14 @@ public:
                 mkey = Qt::KeyboardModifiers(mkey & ~Qt::MetaModifier);
                 //logger.info << "modifier key: meta down" << logger.end;
             }
+            if (mkey & Qt::KeypadModifier) {
+                // TODO how do we get this into our version?
+                mkey = Qt::KeyboardModifiers(mkey & ~Qt::KeypadModifier);
+            }
 
             if (mkey!=0)
-                logger.warning << "MODIFIER KEY, not handled in Qt key handler"
+                logger.warning << "MODIFIER KEY, not handled in Qt key handler: "
+                               << mkey
                                << logger.end;
             return rtn;
         }
@@ -245,13 +264,13 @@ public:
         // function triggered by Qt
         void mousePressEvent(QMouseEvent* e) {
             // set mouse position and get button modifiers
-            state.buttons = ConvertMouseButton(e->buttons());
-            state.x = e->x();
-            state.y = e->y();
+            mouse->state.buttons = ConvertMouseButton(e->buttons());
+            mouse->state.x = e->x();
+            mouse->state.y = e->y();
 
             // create a mouse event
             MouseButtonEventArg marg;
-            marg.state = state;
+            marg.state = mouse->state;
             marg.button = ConvertMouseButton(e->button());
             marg.type = EVENT_PRESS;
 
@@ -263,13 +282,13 @@ public:
         // function triggered by Qt
         void mouseReleaseEvent(QMouseEvent* e) {
             // set mouse position and get button modifiers
-            state.buttons = ConvertMouseButton(e->buttons());
-            state.x = e->x(); // todo: should it be e->globalX() ???
-            state.y = e->y(); // todo: should it be e->globalY() ???
+            mouse->state.buttons = ConvertMouseButton(e->buttons());
+            mouse->state.x = e->x(); // todo: should it be e->globalX() ???
+            mouse->state.y = e->y(); // todo: should it be e->globalY() ???
 
             // create a mouse event
             MouseButtonEventArg marg;
-            marg.state = state;
+            marg.state = mouse->state;
             marg.button = ConvertMouseButton(e->button());
             marg.type = EVENT_RELEASE;
 
@@ -280,13 +299,13 @@ public:
 
         void wheelEvent(QWheelEvent* e) {
             // set mouse position and get button modifiers
-            state.buttons = ConvertMouseButton(e->buttons());
-            state.x = e->x();
-            state.y = e->y();
+            mouse->state.buttons = ConvertMouseButton(e->buttons());
+            mouse->state.x = e->x();
+            mouse->state.y = e->y();
 
             // create a mouse event
             MouseButtonEventArg marg;
-            marg.state = state;
+            marg.state = mouse->state;
 
             int delta = e->delta(); //todo:use the delta to generate more events
             if (delta > 0) {
@@ -306,14 +325,15 @@ public:
         void mouseMoveEvent(QMouseEvent* e) {
             // set mouse position and get button modifiers
             MouseMovedEventArg mmarg;
-            state.buttons = mmarg.buttons;
+            mouse->state.buttons = mmarg.buttons;
             mmarg.x = e->x();
             mmarg.y = e->y();
-            mmarg.dx = mmarg.x - state.x;
-            mmarg.dy = mmarg.y - state.y;
-            state.x = mmarg.x;
-            state.y = mmarg.y;
+            mmarg.dx = mmarg.x - mouse->state.x;
+            mmarg.dy = mmarg.y - mouse->state.y;
+            mouse->state.x = mmarg.x;
+            mouse->state.y = mmarg.y;
             mouse->mme.Notify(mmarg);
+           
             //logger.info << "x: " << mmarg.x << " y: " << mmarg.y << logger.end;
             //logger.info << "dx: " << mmarg.dx << " dy: " << mmarg.dy << logger.end;
         }
@@ -346,13 +366,14 @@ public:
     void Handle(Core::ProcessEventArg arg);
     void Handle(Core::DeinitializeEventArg arg);
 
+    void AddWidget(QWidget* w);
+
     IFrame&             GetFrame();
     Devices::IMouse*    GetMouse();
     Devices::IKeyboard* GetKeyboard();
     Devices::IJoystick* GetJoystick();
 
 private:
-
     // private device members
     QtFrame*    frame;
 
@@ -361,6 +382,7 @@ private:
     QWidget*      top;
     GLWidget*    gl;
     QHBoxLayout*  lay;
+    QLayout* leftLay;
 
 };
 
