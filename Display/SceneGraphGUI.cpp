@@ -43,7 +43,14 @@ namespace Display {
             if (index.isValid()) {
                 
                 //QString text = data(index, Qt::DisplayRole).toString();
-                stream << index.internalPointer();
+                
+                QPersistentModelIndex* pi = new QPersistentModelIndex(index);
+                
+                int a = (int)pi;
+
+                logger.info << "pointer " << a << logger.end;
+                
+                stream << a;
             }
         }
         
@@ -53,7 +60,48 @@ namespace Display {
 
     bool SceneGraphGUI::SceneModel::dropMimeData(const QMimeData *data,Qt::DropAction action, int row, int column, const QModelIndex &parent)
      {
-         logger.info << "drop" << logger.end;
+         QByteArray encodedData = data->data("application/oe");
+         QDataStream stream(&encodedData, QIODevice::ReadOnly);
+
+         ISceneNode* parentNode = (ISceneNode*)parent.internalPointer();
+         
+         logger.info << "parent: " << parentNode->ToString() << logger.end;
+
+         while(!stream.atEnd()) {
+             int p;
+             //QString q;
+             stream >> p;
+             
+             //ISceneNode* node;
+             //node = (ISceneNode*)p;
+             QPersistentModelIndex *pi = (QPersistentModelIndex*)p;
+             ISceneNode* node = (ISceneNode*)(pi->internalPointer());
+             
+             
+             // check cyclic!
+             
+             //int idx = node->GetParent()->IndexOfNode(node);
+             beginRemoveRows(pi->parent(), pi->row(), pi->row());
+             
+             node->GetParent()->RemoveNode(node);
+             endRemoveRows();
+
+             int nidx = parentNode->GetNumberOfNodes();
+             logger.info << nidx << logger.end;
+             parentNode->AddNode(node);
+             beginInsertRows(parent, nidx, nidx);
+             
+             endInsertRows();
+             
+             delete pi;
+
+             //logger.info << "removed " << idx  << logger.end;
+         }
+         
+
+         // logger.info << p << logger.end;
+         
+         // logger.info << "drop" << logger.end;
      }
 
 
@@ -117,14 +165,15 @@ namespace Display {
         if (parentItem == root)
             return QModelIndex();
         
-        int row = 0;
+        // int row = 0;
         ISceneNode *pparent = parentItem->GetParent();
-        for(unsigned int i=0;i<pparent->GetNumberOfNodes();i++) {
-            if (pparent->GetNode(i) == parentItem) {
-                row = i;
-                break;
-            }
-        }
+        // for(unsigned int i=0;i<pparent->GetNumberOfNodes();i++) {
+        //     if (pparent->GetNode(i) == parentItem) {
+        //         row = i;
+        //         break;
+        //     }
+        // }
+        int row = pparent->IndexOfNode(parentItem);
 
         //logger.info << row << logger.end;
 
