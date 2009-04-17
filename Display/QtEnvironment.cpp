@@ -26,9 +26,11 @@ QtEnvironment::QtEnvironment(int width,
                              int depth,
                              FrameOption options) {
 
-    //argc inserted to avoid: QApplication: Invalid Display* argument
-    int argc = 0;
-    app = new QApplication(argc,0);
+    // Create some dummy arguments
+    // (must be valid throughout the life of the application)
+    int*  argc = new int(1);
+    char* argv = new char('\0');
+    app = new QApplication(*argc, &argv);
     top = new QWidget();
     gl  = new GLWidget(top);
     lay = new QHBoxLayout;

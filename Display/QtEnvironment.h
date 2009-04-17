@@ -10,8 +10,11 @@
 #ifndef _OE_QT_ENV_H_
 #define _OE_QT_ENV_H_
 
+// hack so the Qt Display typedef does not conflict with our name-space
+#define Display QtShadowedDisplay
 #include <QtGui>
 #include <QtOpenGL>
+#undef Display
 
 #include <Display/IEnvironment.h>
 #include <Display/QtFrame.h>
