@@ -78,6 +78,7 @@ public:
         mouse    = new QtMouse(this);
         keyboard = new QtKeyboard();
         joystick = new SDLJoystickOnly();
+        setFocusPolicy(Qt::StrongFocus);
     }
 
     Key ConvertKey(Qt::Key key) {
