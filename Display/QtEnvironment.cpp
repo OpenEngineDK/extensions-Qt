@@ -327,8 +327,8 @@ QtEnvironment::QtEnvironment(int width,
     leftLay = new QVBoxLayout();
     frame = new QtFrame(width, height, depth, options);
 
-    lay->addLayout(leftLay);
     lay->addWidget(gl);
+    lay->addLayout(leftLay);
 
     gl->setFixedSize(width,height);
     
