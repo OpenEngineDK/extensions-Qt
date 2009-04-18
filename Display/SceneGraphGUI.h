@@ -8,6 +8,8 @@
 #include <Core/EngineEvents.h>
 #include <Core/IListener.h>
 
+#include <Core/Event.h>
+#include <Core/IEvent.h>
 
 
 namespace OpenEngine {
@@ -16,6 +18,11 @@ namespace Display {
 using namespace OpenEngine::Scene;
 using namespace OpenEngine::Core;
 using namespace std;
+
+class NodeSelectionEventArg {
+public:
+    ISceneNode* node;
+};
 
 class SceneGraphGUI : public QWidget
                     , public IListener<InitializeEventArg> {
@@ -27,6 +34,7 @@ class SceneGraphGUI : public QWidget
         ISceneNode* root;
         QModelIndexList* lastIndexes;
         
+
     public:
         SceneModel(ISceneNode* node);
         ~SceneModel();
@@ -52,6 +60,11 @@ class SceneGraphGUI : public QWidget
     ISceneNode* root;
     SceneModel* model;
     QTreeView* tv;
+    Event<NodeSelectionEventArg> selectionEvent;
+
+public slots:
+    void select(const QItemSelection & selected, const QItemSelection & deselected);
+
     
 public:
     
@@ -59,7 +72,7 @@ public:
     ~SceneGraphGUI();
     
     void Handle(InitializeEventArg arg);
-    
+    IEvent<NodeSelectionEventArg>& SelectionEvent();
     
 };
     

@@ -220,8 +220,32 @@ namespace Display {
     void SceneGraphGUI::Handle(InitializeEventArg arg) {
         model = new SceneModel(root);
         tv->setModel(model);
+        QObject::connect(tv->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+                         this, SLOT(select(QItemSelection,QItemSelection)));
     }
     
+
+
+    void SceneGraphGUI::select(const QItemSelection & selected, const QItemSelection & deselected) {
+        QModelIndexList indexes = selected.indexes();
+
+        logger.info << "selected " << indexes.count()  << logger.end;
+        if (indexes.count() == 1) {
+            QModelIndex index = indexes.first();
+            ISceneNode *node = (ISceneNode*)index.internalPointer();
+            logger.info << node->ToString() << logger.end;
+            
+            NodeSelectionEventArg arg;
+            arg.node = node;
+            selectionEvent.Notify(arg);
+        }
+        
+    }
+
+
+    IEvent<NodeSelectionEventArg>& SceneGraphGUI::SelectionEvent() {
+        return selectionEvent;
+    }
 
     SceneGraphGUI::~SceneGraphGUI() {}
 
