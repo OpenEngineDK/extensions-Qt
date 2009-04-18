@@ -26,8 +26,6 @@ class TransGui : public StrategyVisitor::Strategy<TransformationNode> {
     QWidget* widget;
 public:
     TransGui(SceneNodeGUI& gui) : gui(gui) {
-        //layout = new QHBoxLayout();
-        //layout->addWidget(new QLabel(QString("A transformation node is selected")));
         widget = new QLabel(QString("A transformation node is selected"));
         gui.addWidget(widget);
     }
@@ -44,8 +42,6 @@ class NodeGui : public StrategyVisitor::Strategy<SceneNode> {
     QWidget* widget;   
 public:
     NodeGui(SceneNodeGUI& gui) : gui(gui) {
-        //layout = new QHBoxLayout();
-        //layout->addWidget(new QLabel(QString("A scene node is selected")));
         widget = new QLabel(QString("A scene node is selected"));
         gui.addWidget(widget);
     }
@@ -63,14 +59,11 @@ public:
 
 class DisplayVisitor : public StrategyVisitor {
     SceneNodeGUI& gui;
-    QWidget* widget;
+    QLabel* widget;
 public:
     DisplayVisitor(SceneNodeGUI& gui) : gui(gui) {
-        // Create a default layout for nodes without strategies
-        widget = new QWidget();
-        QLayout* layout = new QHBoxLayout();
-        layout->addWidget(new QLabel(QString("Found no display for selected node")));
-        widget->setLayout(layout);
+        // Create a default widget for nodes without strategies
+        widget = new QLabel(QString(""));
         gui.addWidget(widget);
         // Set up node strategies
         SetSceneNodeStrategy(new NodeGui(gui));
@@ -80,6 +73,9 @@ public:
         delete widget;
     }
     void DefaultVisitNode(ISceneNode* node) {
+        QString str("No display for node type:\n");
+        str.append(node->GetClassName().c_str());
+        widget->setText(str);
         gui.setCurrentWidget(widget);
     }
 };
@@ -93,9 +89,6 @@ SceneNodeGUI::SceneNodeGUI(ISceneNode* node) {
     // Create the strategy to select node displays
     visit = new DisplayVisitor(*this);
     // Create a "none" display that is used if no nodes are selected
-    //noneLayout = new QHBoxLayout();
-    //noneLayout->addWidget(new QLabel(QString("No scene node is selected")));
-    
     noneWidget = new QLabel(QString("No scene node is selected"));
     addWidget(noneWidget);
     // Set the node display or default to "none"
