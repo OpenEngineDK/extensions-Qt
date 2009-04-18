@@ -23,33 +23,37 @@ using namespace Scene;
 
 class TransGui : public StrategyVisitor::Strategy<TransformationNode> {
     SceneNodeGUI& gui;
-    QLayout* layout;
+    QWidget* widget;
 public:
     TransGui(SceneNodeGUI& gui) : gui(gui) {
-        layout = new QHBoxLayout();
-        layout->addWidget(new QLabel(QString("A transformation node is selected")));
+        //layout = new QHBoxLayout();
+        //layout->addWidget(new QLabel(QString("A transformation node is selected")));
+        widget = new QLabel(QString("A transformation node is selected"));
+        gui.addWidget(widget);
     }
     ~TransGui() {
-        delete layout;
+        delete widget;
     }
     void Visit(TransformationNode* node) {
-        gui.setLayout(layout);
+        gui.setCurrentWidget(widget);
     }
 };
 
 class NodeGui : public StrategyVisitor::Strategy<SceneNode> {
     SceneNodeGUI& gui;
-    QLayout* layout;
+    QWidget* widget;   
 public:
     NodeGui(SceneNodeGUI& gui) : gui(gui) {
-        layout = new QHBoxLayout();
-        layout->addWidget(new QLabel(QString("A scene node is selected")));
+        //layout = new QHBoxLayout();
+        //layout->addWidget(new QLabel(QString("A scene node is selected")));
+        widget = new QLabel(QString("A scene node is selected"));
+        gui.addWidget(widget);
     }
     ~NodeGui() {
-        delete layout;
+        delete widget;
     }
     void Visit(SceneNode* node) {
-        gui.setLayout(layout);
+        gui.setCurrentWidget(widget);
     }
 };
 
@@ -59,21 +63,24 @@ public:
 
 class DisplayVisitor : public StrategyVisitor {
     SceneNodeGUI& gui;
-    QLayout* layout;
+    QWidget* widget;
 public:
     DisplayVisitor(SceneNodeGUI& gui) : gui(gui) {
         // Create a default layout for nodes without strategies
-        layout = new QHBoxLayout();
+        widget = new QWidget();
+        QLayout* layout = new QHBoxLayout();
         layout->addWidget(new QLabel(QString("Found no display for selected node")));
+        widget->setLayout(layout);
+        gui.addWidget(widget);
         // Set up node strategies
         SetSceneNodeStrategy(new NodeGui(gui));
         SetTransformationNodeStrategy(new TransGui(gui));
     }
     ~DisplayVisitor() {
-        delete layout;
+        delete widget;
     }
     void DefaultVisitNode(ISceneNode* node) {
-        gui.setLayout(layout);
+        gui.setCurrentWidget(widget);
     }
 };
 
@@ -86,11 +93,14 @@ SceneNodeGUI::SceneNodeGUI(ISceneNode* node) {
     // Create the strategy to select node displays
     visit = new DisplayVisitor(*this);
     // Create a "none" display that is used if no nodes are selected
-    noneLayout = new QHBoxLayout();
-    noneLayout->addWidget(new QLabel(QString("No scene node is selected")));
+    //noneLayout = new QHBoxLayout();
+    //noneLayout->addWidget(new QLabel(QString("No scene node is selected")));
+    
+    noneWidget = new QLabel(QString("No scene node is selected"));
+    addWidget(noneWidget);
     // Set the node display or default to "none"
     if (node) node->Accept(*visit);
-    else setLayout(noneLayout);
+    else setCurrentWidget(noneWidget);
 }
 
 /**
@@ -99,7 +109,7 @@ SceneNodeGUI::SceneNodeGUI(ISceneNode* node) {
  */
 SceneNodeGUI::~SceneNodeGUI() {
     delete visit;
-    delete noneLayout;
+    delete noneWidget;
 }
 
 /**
@@ -108,8 +118,12 @@ SceneNodeGUI::~SceneNodeGUI() {
  */
 void SceneNodeGUI::SetNode(ISceneNode* node) {
     if (node) node->Accept(*visit);
-    else setLayout(noneLayout);
+    else setCurrentWidget(noneWidget);
 }
+
+    void SceneNodeGUI::Handle(NodeSelectionEventArg arg) {
+        SetNode(arg.node);
+    }
 
 } // NS Display
 } // NS OpenEngine
