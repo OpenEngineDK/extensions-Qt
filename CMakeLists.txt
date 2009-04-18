@@ -27,6 +27,8 @@ ADD_LIBRARY(Extensions_Qt
   Display/RenderStateGUI.cpp
   Display/SceneGraphGUI.cpp
   Utils/FPSGUI.cpp
+  Display/SceneNodeGUI.h
+  Display/SceneNodeGUI.cpp
   ${MOC_SOURCE}
   ${UI_SOURCE}
 
@@ -41,4 +43,5 @@ ADD_LIBRARY(Extensions_Qt
 
 TARGET_LINK_LIBRARIES(Extensions_Qt
   ${QT_LIBRARIES}
+  OpenEngine_Scene
 )
