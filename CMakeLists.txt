@@ -7,12 +7,16 @@ INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} )
 QT4_WRAP_UI( UI_SOURCE 
   Display/RenderStateUI.ui
   Display/SceneGraphUI.ui
+  Display/TransformationNodeGUI.ui
+  Display/RenderStateNodeGUI.ui
 )
 
 QT4_WRAP_CPP(MOC_SOURCE
 #  Display/QtResponder.h
   Display/RenderStateGUI.h
   Display/SceneGraphGUI.h
+  Display/TransformationNodeGUI.h
+  Display/RenderStateNodeGUI.h
   )
 
 
@@ -26,6 +30,8 @@ ADD_LIBRARY(Extensions_Qt
 #  Display/QtResponder.cpp
   Display/RenderStateGUI.cpp
   Display/SceneGraphGUI.cpp
+  Display/TransformationNodeGUI.cpp
+  Display/RenderStateNodeGUI.cpp
   Utils/FPSGUI.cpp
   Display/SceneNodeGUI.h
   Display/SceneNodeGUI.cpp

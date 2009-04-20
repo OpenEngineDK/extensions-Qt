@@ -11,6 +11,9 @@
 #include <Scene/StrategyVisitor.h>
 #include <Scene/SceneNodes.h>
 
+#include "TransformationNodeGUI.h"
+#include "RenderStateNodeGUI.h"
+
 namespace OpenEngine {
 namespace Display {
 
@@ -23,16 +26,34 @@ using namespace Scene;
 
 class TransGui : public StrategyVisitor::Strategy<TransformationNode> {
     SceneNodeGUI& gui;
-    QWidget* widget;
+    TransformationNodeGUI* widget;
 public:
     TransGui(SceneNodeGUI& gui) : gui(gui) {
-        widget = new QLabel(QString("A transformation node is selected"));
+        widget = new TransformationNodeGUI();
         gui.addWidget(widget);
     }
     ~TransGui() {
         delete widget;
     }
     void Visit(TransformationNode* node) {
+        widget->SetNode(node);
+        gui.setCurrentWidget(widget);
+    }
+};
+
+class RendGui : public StrategyVisitor::Strategy<RenderStateNode> {
+    SceneNodeGUI& gui;
+    RenderStateNodeGUI* widget;
+public:
+    RendGui(SceneNodeGUI& gui) : gui(gui) {
+        widget = new RenderStateNodeGUI();
+        gui.addWidget(widget);
+    }
+    ~RendGui() {
+        delete widget;
+    }
+    void Visit(RenderStateNode* node) {
+        widget->SetNode(node);
         gui.setCurrentWidget(widget);
     }
 };
@@ -68,6 +89,7 @@ public:
         // Set up node strategies
         SetSceneNodeStrategy(new NodeGui(gui));
         SetTransformationNodeStrategy(new TransGui(gui));
+        SetRenderStateNodeStrategy(new RendGui(gui));
     }
     ~DisplayVisitor() {
         delete widget;
