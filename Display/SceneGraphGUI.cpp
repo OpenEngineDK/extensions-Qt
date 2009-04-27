@@ -4,13 +4,19 @@
 #include "Qt/ui_SceneGraphUI.h"
 
 #include <Scene/SceneNodes.h>
+#include <Resources/ResourceManager.h>
+#include <Resources/IModelResource.h>
+#include <Renderers/TextureLoader.h>
 
 #include <Logging/Logger.h>
 #include <stack>
 
+
 namespace OpenEngine {
 namespace Display {
 
+using namespace Resources;
+using namespace Renderers;
 
     SceneGraphGUI::SceneModel::SceneModel(ISceneNode* node)
         : QAbstractItemModel(), root(new SceneNode()) {
@@ -218,7 +224,8 @@ namespace Display {
         return idx;
     }
 
-    SceneGraphGUI::SceneGraphGUI(ISceneNode* n) : root(n) {
+    SceneGraphGUI::SceneGraphGUI(ISceneNode* n, TextureLoader* tl)
+        : root(n), textureLoader(tl) {
         Ui::SceneGraphGUI* ui = new Ui::SceneGraphGUI();
         ui->setupUi(this);
         tv = ui->treeView;
@@ -326,8 +333,40 @@ namespace Display {
     }
 
     void SceneGraphGUI::LoadSceneNode() {
-        logger.info << "Loading a scene node is currently not implemented"
-                    << logger.end;
+        // Loading only works if a single node is selected
+        if (selectionList.GetSelection().size() != 1) {
+            logger.info << "Could not load a new scene without a parent."
+                        << logger.end;
+            return;
+        }
+        ISceneNode* selected = *selectionList.GetSelection().begin();
+
+        QString fileTmp = QFileDialog::getOpenFileName(this, tr("Load Scene"));
+        string file(fileTmp.toAscii().data());
+        logger.info << "Loading a scene from file: " << file << logger.end;
+
+        try {
+            IModelResourcePtr res = ResourceManager<IModelResource>::Create(file);
+            res->Load();
+            ISceneNode* node = res->GetSceneNode();
+            if (node == NULL) {
+                logger.info << "Model did not load a scene" << logger.end;
+            } else {
+                try {
+                    if (textureLoader) textureLoader->Load(*node);
+                } catch (Exception e) {
+                    logger.warning << e.what() << logger.end;
+                }
+                selected->AddNode(node);
+                QModelIndex i = model->FindNode(selected);    
+                tv->setExpanded(i, false);
+                tv->setExpanded(i, true);
+                logger.info << "Successfully loaded the model" << logger.end;
+            }
+            res->Unload();
+        } catch (Exception e) {
+            logger.warning << e.what() << logger.end;
+        }
     }
 
     void SceneGraphGUI::SaveSceneNode() {

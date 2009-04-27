@@ -14,6 +14,7 @@
 #include <Utils/SelectionSet.h>
 
 namespace OpenEngine {
+namespace Renderers { class TextureLoader; }
 namespace Display {
 
 using namespace OpenEngine::Scene;
@@ -62,6 +63,7 @@ class SceneGraphGUI : public QWidget
     QTreeView* tv;
     SelectionSet<ISceneNode> selectionList;
     //Event<NodeSelectionEventArg> selectionEvent;
+    Renderers::TextureLoader* textureLoader;
 
 public slots:
     void select(const QItemSelection & selected, const QItemSelection & deselected);
@@ -72,7 +74,7 @@ public slots:
     
 public:
     
-    SceneGraphGUI(ISceneNode* node);
+    SceneGraphGUI(ISceneNode* node, Renderers::TextureLoader* tl);
     ~SceneGraphGUI();
     
     void Handle(InitializeEventArg arg);
