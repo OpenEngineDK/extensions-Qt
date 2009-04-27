@@ -1,8 +1,5 @@
-  INCLUDE( ${QT_USE_FILE} )
-
-
+INCLUDE( ${QT_USE_FILE} )
 INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} )
-
 
 QT4_WRAP_UI( UI_SOURCE 
   Display/RenderStateUI.ui
@@ -19,7 +16,11 @@ QT4_WRAP_CPP(MOC_SOURCE
   Display/RenderStateNodeGUI.h
   )
 
+QT4_ADD_RESOURCES(QRC_SOURCE
+  icons/icons.qrc
+)
 
+MESSAGE(${QRC_SOURCE})
 
 # Create the extension library
 ADD_LIBRARY(Extensions_Qt
@@ -37,15 +38,8 @@ ADD_LIBRARY(Extensions_Qt
   Display/SceneNodeGUI.cpp
   ${MOC_SOURCE}
   ${UI_SOURCE}
-
+  ${QRC_SOURCE}
 )
-
-# INCLUDE( ${QT_USE_FILE} )
-
-
-
-# INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} )
-
 
 TARGET_LINK_LIBRARIES(Extensions_Qt
   ${QT_LIBRARIES}

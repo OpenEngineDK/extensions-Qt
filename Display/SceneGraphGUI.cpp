@@ -3,6 +3,8 @@
 
 #include "Qt/ui_SceneGraphUI.h"
 
+#include <Scene/SceneNodes.h>
+
 #include <Logging/Logger.h>
 #include <stack>
 
@@ -216,13 +218,24 @@ namespace Display {
         return idx;
     }
 
-
     SceneGraphGUI::SceneGraphGUI(ISceneNode* n) : root(n) {
         Ui::SceneGraphGUI* ui = new Ui::SceneGraphGUI();
         ui->setupUi(this);
         tv = ui->treeView;
+
+        // Generate creation entry for each scene node
+        QMenu* newMenu = new QMenu(ui->btnNew);
+        ui->btnNew->setMenu(newMenu);
+#define SCENE_NODE(type)                        \
+        newMenu->addAction(QString(#type));
+#include <Scene/SceneNodes.def>
+#undef SCENE_NODE
     }
 
+    SceneGraphGUI::~SceneGraphGUI() {
+
+    }
+        
     void SceneGraphGUI::Handle(InitializeEventArg arg) {
         model = new SceneModel(root);
         tv->setModel(model);
@@ -232,11 +245,10 @@ namespace Display {
                          SLOT(select(QItemSelection,QItemSelection)));
     }
     
-    void SceneGraphGUI::Handle(SelectionList<ISceneNode>::ChangedEventArg arg) {
+    void SceneGraphGUI::Handle(SelectionSet<ISceneNode>::ChangedEventArg arg) {
         if (arg.selection.size() == 1) {
             QModelIndex idx = model->FindNode(*(arg.selection.begin()));
             tv->selectionModel()->select(idx, QItemSelectionModel::Select);
-
         }
     }
 
@@ -263,20 +275,65 @@ namespace Display {
     }
 
 
-    IEvent<SelectionList<ISceneNode>::ChangedEventArg >& SceneGraphGUI::SelectionEvent() {
+    IEvent<SelectionSet<ISceneNode>::ChangedEventArg >& SceneGraphGUI::SelectionEvent() {
         return selectionList.ChangedEvent();
     }
 
-    SceneGraphGUI::~SceneGraphGUI() {}
+
+    void SceneGraphGUI::CreateSceneNode(QAction* act) {
+        // Creation only works if a single node is selected
+        if (selectionList.GetSelection().size() != 1) {
+            logger.info << "Could not create a new scene node without a parent."
+                        << logger.end;
+            return;
+        }
+        ISceneNode* selected = *selectionList.GetSelection().begin();
+        // Now we test the action-text against the name of all known
+        // nodes.  This is a hack, but I cannot find a better
+        // solution as Qt slots can not be defined by a macro :(
+        // I also use a hack to force the index to update its display.
+        // Please feel free to do that in a nicer fashion.
+        // Also, we should change the currently selected node to the
+        // newly created node.
+        string name(act->text().toAscii().data());
+#define SCENE_NODE(type)                       \
+        if (name == #type) {                   \
+            try {                              \
+                QModelIndex i;                 \
+                ISceneNode* node = new type(); \
+                selected->AddNode(node);       \
+                i = model->FindNode(selected); \
+                tv->setExpanded(i, false);     \
+                tv->setExpanded(i, true);      \
+            } catch (Core::Exception e) {      \
+                logger.warning << e.what()     \
+                               << logger.end;  \
+            }                                  \
+        }
+#include <Scene/SceneNodes.def>
+#undef SCENE_NODE
+    }
+
+    void SceneGraphGUI::DeleteSceneNode() {
+        // Hmmm, this is not so easy to implement as we currently have
+        // references to scene nodes that may live past our deletion
+        // of the node. This means that the selection list and all
+        // other structures that have pointers to scene nodes will
+        // need to do so via weak pointers or something similar and
+        // they must handle "deleted" nodes gracefully.
+        logger.info << "Deleting a scene node is currently not implemented"
+                    << logger.end;
+    }
+
+    void SceneGraphGUI::LoadSceneNode() {
+        logger.info << "Loading a scene node is currently not implemented"
+                    << logger.end;
+    }
+
+    void SceneGraphGUI::SaveSceneNode() {
+        logger.info << "Saving a scene node is currently not implemented"
+                    << logger.end;
+    }
 
 }
 }
-
-// #include "SceneGraphGUI.h"
-
-// #if SG_USE_NEW
-// #include "SceneGraphGUI-new.cpp"
-// #else
-// #include "SceneGraphGUI-old.cpp"
-// #endif
-

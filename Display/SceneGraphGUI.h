@@ -11,7 +11,7 @@
 #include <Core/Event.h>
 #include <Core/IEvent.h>
 
-#include <Utils/SelectionList.h>
+#include <Utils/SelectionSet.h>
 
 namespace OpenEngine {
 namespace Display {
@@ -24,12 +24,12 @@ using namespace std;
 
 class SceneGraphGUI : public QWidget
                     , public IListener<InitializeEventArg>
-                    , public IListener<SelectionList<ISceneNode >::ChangedEventArg > {
+                    , public IListener<SelectionSet<ISceneNode >::ChangedEventArg > {
             
     Q_OBJECT;
 
     class SceneModel : public QAbstractItemModel {
-                        
+        friend class SceneGraphGUI;
         ISceneNode* root;
         QModelIndexList* lastIndexes;
         
@@ -60,12 +60,15 @@ class SceneGraphGUI : public QWidget
     ISceneNode* root;
     SceneModel* model;
     QTreeView* tv;
-    SelectionList<ISceneNode> selectionList;
+    SelectionSet<ISceneNode> selectionList;
     //Event<NodeSelectionEventArg> selectionEvent;
 
 public slots:
     void select(const QItemSelection & selected, const QItemSelection & deselected);
-
+    void CreateSceneNode(QAction* act);
+    void DeleteSceneNode();
+    void LoadSceneNode();
+    void SaveSceneNode();
     
 public:
     
@@ -73,9 +76,9 @@ public:
     ~SceneGraphGUI();
     
     void Handle(InitializeEventArg arg);
-    void Handle(SelectionList<ISceneNode>::ChangedEventArg arg);
+    void Handle(SelectionSet<ISceneNode>::ChangedEventArg arg);
 
-    IEvent<SelectionList<ISceneNode>::ChangedEventArg >& SelectionEvent();
+    IEvent<SelectionSet<ISceneNode>::ChangedEventArg >& SelectionEvent();
     
 };
     

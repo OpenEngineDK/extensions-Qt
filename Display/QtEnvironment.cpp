@@ -17,6 +17,11 @@
 
 #include <Logging/Logger.h>
 
+// hack to avoid using the init macro inside a namespace
+inline void initResources() {
+    Q_INIT_RESOURCE(icons);
+}
+
 namespace OpenEngine {
 namespace Display {
 
@@ -323,6 +328,9 @@ QtEnvironment::QtEnvironment(bool mktop,
     app   = new QApplication(*argc, &argv);
     gl    = new GLWidget();
     frame = new QtFrame(width, height, depth, options);
+
+    initResources();
+
     gl->setFixedSize(width,height);
     gl->setFocus();
     gl->setMouseTracking(true);

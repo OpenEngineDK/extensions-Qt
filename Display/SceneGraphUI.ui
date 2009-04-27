@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>296</width>
-    <height>351</height>
+    <width>213</width>
+    <height>502</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -29,8 +29,148 @@
      </property>
     </widget>
    </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout" >
+     <item>
+      <widget class="QToolButton" name="btnNew" >
+       <property name="text" >
+        <string/>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/icons.qrc" >
+         <normaloff>:/icons/node-new.png</normaloff>:/icons/node-new.png</iconset>
+       </property>
+       <property name="popupMode" >
+        <enum>QToolButton::InstantPopup</enum>
+       </property>
+       <property name="arrowType" >
+        <enum>Qt::NoArrow</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnDelete" >
+       <property name="text" >
+        <string>...</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/icons.qrc" >
+         <normaloff>:/icons/node-delete.png</normaloff>:/icons/node-delete.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnOpen" >
+       <property name="text" >
+        <string>...</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/icons.qrc" >
+         <normaloff>:/icons/node-open.png</normaloff>:/icons/node-open.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnSave" >
+       <property name="text" >
+        <string>...</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/icons.qrc" >
+         <normaloff>:/icons/node-save.png</normaloff>:/icons/node-save.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer" >
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0" >
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
   </layout>
  </widget>
- <resources/>
- <connections/>
+ <resources>
+  <include location="../icons/icons.qrc" />
+ </resources>
+ <connections>
+  <connection>
+   <sender>btnOpen</sender>
+   <signal>clicked()</signal>
+   <receiver>SceneGraphGUI</receiver>
+   <slot>LoadSceneNode()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>107</x>
+     <y>490</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>212</x>
+     <y>457</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnSave</sender>
+   <signal>clicked()</signal>
+   <receiver>SceneGraphGUI</receiver>
+   <slot>SaveSceneNode()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>144</x>
+     <y>490</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>212</x>
+     <y>459</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnNew</sender>
+   <signal>triggered(QAction*)</signal>
+   <receiver>SceneGraphGUI</receiver>
+   <slot>CreateSceneNode(QAction*)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>23</x>
+     <y>475</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>212</x>
+     <y>458</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnDelete</sender>
+   <signal>clicked()</signal>
+   <receiver>SceneGraphGUI</receiver>
+   <slot>DeleteSceneNode()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>60</x>
+     <y>477</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>839</x>
+     <y>458</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>CreateSceneNode(QAction*)</slot>
+  <slot>DeleteSceneNode()</slot>
+  <slot>LoadSceneNode()</slot>
+  <slot>SaveSceneNode()</slot>
+ </slots>
 </ui>
