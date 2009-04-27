@@ -1,7 +1,0 @@
-<RCC>
-  <qresource prefix="icons" >
-    <file>icons/node-new.png</file>
-    <file>icons/node-open.png</file>
-    <file>icons/node-save.png</file>
-  </qresource>
-</RCC>

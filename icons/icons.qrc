@@ -1,0 +1,8 @@
+<RCC>
+  <qresource prefix="icons" >
+    <file>node-new.png</file>
+    <file>node-open.png</file>
+    <file>node-save.png</file>
+    <file>node-delete.png</file>
+  </qresource>
+</RCC>
