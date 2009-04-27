@@ -35,23 +35,29 @@ using namespace Core;
 class QtEnvironment : public IEnvironment {
 public:
 
-    QtEnvironment(int width  = 640,
+    QtEnvironment(bool mktop = true,
+                  int width  = 640,
                   int height = 480,
                   int depth  = 32,
                   FrameOption options = FrameOption());
 
     virtual ~QtEnvironment();
 
+    // IEnvironment implementation
+
     void Handle(Core::InitializeEventArg arg);
     void Handle(Core::ProcessEventArg arg);
     void Handle(Core::DeinitializeEventArg arg);
-
-    void AddWidget(QWidget* w);
 
     IFrame&             GetFrame();
     Devices::IMouse*    GetMouse();
     Devices::IKeyboard* GetKeyboard();
     Devices::IJoystick* GetJoystick();
+
+    // Qt specific usage
+    QApplication* GetApplication();
+    //QWidget*      GetTopWidget();
+    QGLWidget*    GetGLWidget();
 
 private:
 
@@ -65,8 +71,7 @@ private:
     QApplication* app;
     QWidget*      top;
     GLWidget*     gl;
-    QHBoxLayout*  lay;
-    QLayout*      leftLay;
+    QLayout*      lay;
 
 };
 

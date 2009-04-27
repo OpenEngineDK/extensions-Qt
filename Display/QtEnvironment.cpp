@@ -74,7 +74,7 @@ public:
     QtKeyboard*      keyboard;
     SDLJoystickOnly* joystick;
 
-    GLWidget(QWidget* parent) : QGLWidget(parent) {
+    GLWidget() : QGLWidget() {
         mouse    = new QtMouse(this);
         keyboard = new QtKeyboard();
         joystick = new SDLJoystickOnly();
@@ -311,37 +311,39 @@ public:
 // Qt Environment
 // ============================================================
 
-QtEnvironment::QtEnvironment(int width,
+QtEnvironment::QtEnvironment(bool mktop,
+                             int width,
                              int height,
                              int depth,
                              FrameOption options) {
-
     // Create some dummy arguments
     // (must be valid throughout the life of the application)
     int*  argc = new int(1);
     char* argv = new char('\0');
-    app = new QApplication(*argc, &argv);
-    top = new QWidget();
-    gl  = new GLWidget(top);
-    lay = new QHBoxLayout();
-    leftLay = new QVBoxLayout();
+    app   = new QApplication(*argc, &argv);
+    gl    = new GLWidget();
     frame = new QtFrame(width, height, depth, options);
-
-    lay->addWidget(gl);
-    lay->addLayout(leftLay);
-
     gl->setFixedSize(width,height);
-    
-    top->setLayout(lay);
-    top->setWindowTitle("My Window");
-    top->show();
-
     gl->setFocus();
     gl->setMouseTracking(true);
+
+    if (mktop) {
+        top = new QWidget();
+        lay = new QHBoxLayout();
+        lay->addWidget(gl);
+        top->setLayout(lay);
+        top->show();
+    }
 }
 
-void QtEnvironment::AddWidget(QWidget* w) {
-    leftLay->addWidget(w);
+QApplication* QtEnvironment::GetApplication() {
+    return app;
+}
+    //QWidget* QtEnvironment::GetTopWidget() {
+    //    return top;
+    //}
+QGLWidget* QtEnvironment::GetGLWidget() {
+    return gl;
 }
 
 QtEnvironment::~QtEnvironment() {
