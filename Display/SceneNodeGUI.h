@@ -12,10 +12,13 @@
 
 #include <QtGui>
 #include <Display/SceneGraphGUI.h>
+#include <Utils/SelectionList.h>
 
 namespace OpenEngine {
 namespace Scene { class ISceneNode; class StrategyVisitor; }
 namespace Display {
+
+using OpenEngine::Utils::SelectionList;
 
 /**
  * Qt component to display a scene node.
@@ -23,7 +26,7 @@ namespace Display {
  * @class SceneNodeGUI SceneNodeGUI.h Display/SceneNodeGUI.h
  */
     class SceneNodeGUI : public QStackedWidget,
-                         public IListener<NodeSelectionEventArg> {
+                         public IListener<SelectionList<ISceneNode>::ChangedEventArg> {
 private:
     Scene::StrategyVisitor* visit;
     QWidget* noneWidget;
@@ -32,7 +35,7 @@ public:
     SceneNodeGUI(Scene::ISceneNode* node = NULL);
     virtual ~SceneNodeGUI();
     void SetNode(Scene::ISceneNode* node);
-    void Handle(NodeSelectionEventArg arg);
+    void Handle(SelectionList<ISceneNode>::ChangedEventArg arg);
     
 };
 

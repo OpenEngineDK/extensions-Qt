@@ -136,8 +136,11 @@ void SceneNodeGUI::SetNode(ISceneNode* node) {
     else setCurrentWidget(noneWidget);
 }
 
-    void SceneNodeGUI::Handle(NodeSelectionEventArg arg) {
-        SetNode(arg.node);
+    void SceneNodeGUI::Handle(SelectionList<ISceneNode>::ChangedEventArg arg) {
+        if (arg.selection.size() == 1) {
+            ISceneNode* node = *(arg.selection.begin());
+            SetNode(node);
+        }
     }
 
 } // NS Display

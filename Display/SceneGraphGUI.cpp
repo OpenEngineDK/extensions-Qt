@@ -4,6 +4,7 @@
 #include "Qt/ui_SceneGraphUI.h"
 
 #include <Logging/Logger.h>
+#include <stack>
 
 namespace OpenEngine {
 namespace Display {
@@ -17,22 +18,18 @@ namespace Display {
     SceneGraphGUI::SceneModel::~SceneModel() {}
     
 
-    Qt::DropActions SceneGraphGUI::SceneModel::supportedDropActions() const
-    {
-        
+    Qt::DropActions SceneGraphGUI::SceneModel::supportedDropActions() const {        
         return Qt::CopyAction | Qt::MoveAction;
     }
 
 
-    QStringList SceneGraphGUI::SceneModel::mimeTypes() const
-    {
+    QStringList SceneGraphGUI::SceneModel::mimeTypes() const {
         QStringList types;
         types << "application/oe";
         return types;
     }
 
-    QMimeData* SceneGraphGUI::SceneModel::mimeData(const QModelIndexList &indexes) const
-    {
+    QMimeData* SceneGraphGUI::SceneModel::mimeData(const QModelIndexList &indexes) const {
 
         QMimeData *mimeData = new QMimeData();
         QByteArray encodedData;
@@ -42,14 +39,10 @@ namespace Display {
         foreach (QModelIndex index, indexes) {
             if (index.isValid()) {
                 
-                //QString text = data(index, Qt::DisplayRole).toString();
-                
+                //QString text = data(index, Qt::DisplayRole).toString();                
                 QPersistentModelIndex* pi = new QPersistentModelIndex(index);
-                
                 int a = (int)pi;
-
-                logger.info << "pointer " << a << logger.end;
-                
+                logger.info << "pointer " << a << logger.end;                
                 stream << a;
             }
         }
@@ -58,8 +51,7 @@ namespace Display {
         return mimeData;
     }
 
-    bool SceneGraphGUI::SceneModel::dropMimeData(const QMimeData *data,Qt::DropAction action, int row, int column, const QModelIndex &parent)
-     {
+    bool SceneGraphGUI::SceneModel::dropMimeData(const QMimeData *data,Qt::DropAction action, int row, int column, const QModelIndex &parent) {
          QByteArray encodedData = data->data("application/oe");
          QDataStream stream(&encodedData, QIODevice::ReadOnly);
 
@@ -96,14 +88,11 @@ namespace Display {
              delete pi;
 
              //logger.info << "removed " << idx  << logger.end;
-         }
-         
-
-         // logger.info << p << logger.end;
-         
+         }         
+         // logger.info << p << logger.end;         
          // logger.info << "drop" << logger.end;
+         return true;
      }
-
 
     int SceneGraphGUI::SceneModel::rowCount(const QModelIndex& parent) const {
 
@@ -121,9 +110,6 @@ namespace Display {
     }
 
     QVariant SceneGraphGUI::SceneModel::data(const QModelIndex& index, int role) const {
-        
-        
-        
         if (role != Qt::DisplayRole)
             return QVariant();
 
@@ -134,7 +120,9 @@ namespace Display {
         return QString(item->GetClassName().c_str());
     }
 
-    QModelIndex SceneGraphGUI::SceneModel::index(int row, int col, const QModelIndex& parent) const {
+    QModelIndex SceneGraphGUI::SceneModel::index(int row, 
+                                                 int col, 
+                                                 const QModelIndex& parent) const {
         if (!hasIndex(row,col, parent))
             return QModelIndex();
 
@@ -144,9 +132,6 @@ namespace Display {
         else
             parentItem = static_cast<ISceneNode*>(parent.internalPointer());
         
-        //logger.info << parentItem << " " << row << logger.end;
-        //1logger.info << parentItem->children[row] << logger.end;
-
         ISceneNode* child = parentItem->GetNode(row);
         if (child)
             return createIndex(row,col,child);
@@ -154,8 +139,7 @@ namespace Display {
             return QModelIndex();
     }
 
-    QModelIndex SceneGraphGUI::SceneModel::parent(const QModelIndex& index) const {
-        
+    QModelIndex SceneGraphGUI::SceneModel::parent(const QModelIndex& index) const {        
         if (!index.isValid())
             return QModelIndex();
 
@@ -202,31 +186,62 @@ namespace Display {
 
         return QVariant();
     }
+    QModelIndex SceneGraphGUI::SceneModel::FindNode(ISceneNode *node) {
+        // find indexes in all parents
+        ISceneNode *parent;
+        ISceneNode *n = node;
+        stack<ISceneNode*> parents;
+
+        parents.push(node);
+        while ((parent = n->GetParent())) {
+            parents.push(parent);            
+            n = parent;
+        }
+
+        QModelIndex idx;
+        parent = parents.top();
+        parents.pop();
+        while (!parents.empty()) {            
+            n = parents.top();
+            parents.pop();
+            int i = parent->IndexOfNode(n);
+            logger.info << i << logger.end;
+            idx = index(i, 0, idx);
+            parent = n;
+        }
+        logger.info << node << logger.end;
+        logger.info << idx.internalPointer() << logger.end;
+
+
+        return idx;
+    }
 
 
     SceneGraphGUI::SceneGraphGUI(ISceneNode* n) : root(n) {
-
         Ui::SceneGraphGUI* ui = new Ui::SceneGraphGUI();
         ui->setupUi(this);
-
         tv = ui->treeView;
-        // QVBoxLayout* lay = new QVBoxLayout();
-        
-        // lay->addWidget(tv);
-
-        // setLayout(lay);
     }
 
     void SceneGraphGUI::Handle(InitializeEventArg arg) {
         model = new SceneModel(root);
         tv->setModel(model);
-        QObject::connect(tv->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-                         this, SLOT(select(QItemSelection,QItemSelection)));
+        QObject::connect(tv->selectionModel(), 
+                         SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+                         this, 
+                         SLOT(select(QItemSelection,QItemSelection)));
     }
     
+    void SceneGraphGUI::Handle(SelectionList<ISceneNode>::ChangedEventArg arg) {
+        if (arg.selection.size() == 1) {
+            QModelIndex idx = model->FindNode(*(arg.selection.begin()));
+            tv->selectionModel()->select(idx, QItemSelectionModel::Select);
 
+        }
+    }
 
-    void SceneGraphGUI::select(const QItemSelection & selected, const QItemSelection & deselected) {
+    void SceneGraphGUI::select(const QItemSelection & selected, 
+                               const QItemSelection & deselected) {
         QModelIndexList indexes = selected.indexes();
 
         logger.info << "selected " << indexes.count()  << logger.end;
@@ -235,16 +250,21 @@ namespace Display {
             ISceneNode *node = (ISceneNode*)index.internalPointer();
             logger.info << node->ToString() << logger.end;
             
-            NodeSelectionEventArg arg;
-            arg.node = node;
-            selectionEvent.Notify(arg);
+            model->FindNode(node);
+
+            //NodeSelectionEventArg arg;
+            //arg.node = node;
+            //selectionEvent.Notify(arg);
+            selectionList.Clear();
+            
+            selectionList.Select(node);
         }
         
     }
 
 
-    IEvent<NodeSelectionEventArg>& SceneGraphGUI::SelectionEvent() {
-        return selectionEvent;
+    IEvent<SelectionList<ISceneNode>::ChangedEventArg >& SceneGraphGUI::SelectionEvent() {
+        return selectionList.ChangedEvent();
     }
 
     SceneGraphGUI::~SceneGraphGUI() {}
