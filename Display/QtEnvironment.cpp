@@ -279,7 +279,7 @@ public:
         } else {
             marg.button = BUTTON_WHEEL_DOWN;
         }
-        marg.type = EVENT_ANY; // todo: ?!?
+        marg.type = EVENT_PRESS;
 
         // send the event
         mouse->mbe.Notify( marg );
