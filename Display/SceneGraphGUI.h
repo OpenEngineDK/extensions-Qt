@@ -61,9 +61,9 @@ class SceneGraphGUI : public QWidget
     ISceneNode* root;
     SceneModel* model;
     QTreeView* tv;
-    SelectionSet<ISceneNode> selectionList;
-    //Event<NodeSelectionEventArg> selectionEvent;
     Renderers::TextureLoader* textureLoader;
+    SelectionSet<ISceneNode>& selectionList;
+    //Event<NodeSelectionEventArg> selectionEvent;
 
 public slots:
     void select(const QItemSelection & selected, const QItemSelection & deselected);
@@ -74,7 +74,7 @@ public slots:
     
 public:
     
-    SceneGraphGUI(ISceneNode* node, Renderers::TextureLoader* tl);
+    SceneGraphGUI(ISceneNode* node, Renderers::TextureLoader* tl, SelectionSet<ISceneNode>& ss);
     ~SceneGraphGUI();
     
     void Handle(InitializeEventArg arg);

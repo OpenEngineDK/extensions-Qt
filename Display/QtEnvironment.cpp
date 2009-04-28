@@ -289,6 +289,7 @@ public:
     void mouseMoveEvent(QMouseEvent* e) {
         // set mouse position and get button modifiers
         MouseMovedEventArg mmarg;
+        mmarg.buttons = ConvertMouseButton(e->buttons());
         mouse->state.buttons = mmarg.buttons;
         mmarg.x = e->x();
         mmarg.y = e->y();

@@ -224,8 +224,8 @@ using namespace Renderers;
         return idx;
     }
 
-    SceneGraphGUI::SceneGraphGUI(ISceneNode* n, TextureLoader* tl)
-        : root(n), textureLoader(tl) {
+    SceneGraphGUI::SceneGraphGUI(ISceneNode* n, TextureLoader* tl, SelectionSet<ISceneNode>& ss)
+        : root(n), textureLoader(tl), selectionList(ss) {
         Ui::SceneGraphGUI* ui = new Ui::SceneGraphGUI();
         ui->setupUi(this);
         tv = ui->treeView;
