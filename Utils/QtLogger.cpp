@@ -59,7 +59,7 @@ QtLogger::~QtLogger(){
 void QtLogger::Write(LoggerType type, string msg) {
     time_t t; time(&t); // get the current time
     char buf[20]; memset (buf, '0', 20); // this terminates the string
-	strftime (buf, sizeof(buf), /*"%Y/%m/%d %H:*/"%M:%S", localtime(&t));
+	strftime (buf, sizeof(buf), /*"%Y/%m/%d */"%H:%M:%S", localtime(&t));
     text->append("<div style=\""+ TypeStyle(type) +"\">" +
                  QString(buf) + " - " +
                  QString(msg.c_str()) + "</div>");
