@@ -33,7 +33,10 @@ ADD_LIBRARY(Extensions_Qt
   Display/SceneGraphGUI.cpp
   Display/TransformationNodeGUI.cpp
   Display/RenderStateNodeGUI.cpp
+  Utils/FPSGUI.h
   Utils/FPSGUI.cpp
+  Utils/QtLogger.h
+  Utils/QtLogger.cpp
   Display/SceneNodeGUI.h
   Display/SceneNodeGUI.cpp
   ${MOC_SOURCE}
