@@ -49,7 +49,7 @@ using namespace Renderers;
                 
                 //QString text = data(index, Qt::DisplayRole).toString();                
                 QPersistentModelIndex* pi = new QPersistentModelIndex(index);
-                int a = (int)pi;
+                void* a = (void*)pi;
                 logger.info << "pointer " << a << logger.end;                
                 stream << a;
             }
