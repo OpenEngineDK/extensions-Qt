@@ -39,6 +39,8 @@ using namespace Renderers;
 
     QMimeData* SceneGraphGUI::SceneModel::mimeData(const QModelIndexList &indexes) const {
         QMimeData *mimeData = new QMimeData();        
+        
+        mimeData->setData("application/oe",QByteArray());
         mimeData->setText("[OpenEngine SceneGraph]");
         return mimeData;
     }
@@ -54,6 +56,20 @@ using namespace Renderers;
         foreach (QModelIndex index, indexes) {
             ISceneNode* node = (ISceneNode*)(index.internalPointer());
             
+            ISceneNode* hat = parentNode;
+            while (hat) {
+                if (node == hat) {
+                    logger.info << "Cycling drop atempted" << logger.end;
+                    return false;
+                }
+                hat = hat->GetParent();
+            }
+
+        }
+        foreach (QModelIndex index, indexes) {
+            ISceneNode* node = (ISceneNode*)(index.internalPointer());
+
+
             logger.info << "Dropped: " <<  node->GetClassName() << logger.end;           
             beginRemoveRows(index.parent(), index.row(), index.row());
              
@@ -182,13 +198,9 @@ using namespace Renderers;
             n = parents.top();
             parents.pop();
             int i = parent->IndexOfNode(n);
-            logger.info << i << logger.end;
             idx = index(i, 0, idx);
             parent = n;
         }
-        logger.info << node << logger.end;
-        logger.info << idx.internalPointer() << logger.end;
-
 
         return idx;
     }
