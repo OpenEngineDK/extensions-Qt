@@ -18,8 +18,8 @@ namespace Display {
 using namespace Resources;
 using namespace Renderers;
 
-    SceneGraphGUI::SceneModel::SceneModel(ISceneNode* node)
-        : QAbstractItemModel(), root(new SceneNode()) {
+    SceneGraphGUI::SceneModel::SceneModel(ISceneNode* node, SceneGraphGUI* gui)
+        : QAbstractItemModel(), root(new SceneNode()), gui(gui) {
         root->AddNode(node);
     }
 
@@ -38,67 +38,36 @@ using namespace Renderers;
     }
 
     QMimeData* SceneGraphGUI::SceneModel::mimeData(const QModelIndexList &indexes) const {
-
-        QMimeData *mimeData = new QMimeData();
-        QByteArray encodedData;
-        
-        QDataStream stream(&encodedData, QIODevice::WriteOnly);
-        
-        foreach (QModelIndex index, indexes) {
-            if (index.isValid()) {
-                
-                //QString text = data(index, Qt::DisplayRole).toString();                
-                QPersistentModelIndex* pi = new QPersistentModelIndex(index);
-                void* a = (void*)pi;
-                logger.info << "pointer " << a << logger.end;                
-                stream << a;
-            }
-        }
-        
-        mimeData->setData("application/oe", encodedData);
+        QMimeData *mimeData = new QMimeData();        
+        mimeData->setText("[OpenEngine SceneGraph]");
         return mimeData;
     }
 
     bool SceneGraphGUI::SceneModel::dropMimeData(const QMimeData *data,Qt::DropAction action, int row, int column, const QModelIndex &parent) {
-         QByteArray encodedData = data->data("application/oe");
-         QDataStream stream(&encodedData, QIODevice::ReadOnly);
-
-         ISceneNode* parentNode = (ISceneNode*)parent.internalPointer();
+        
+        ISceneNode* parentNode = (ISceneNode*)parent.internalPointer();
          
-         logger.info << "parent: " << parentNode->ToString() << logger.end;
+        logger.info << "parent: " << parentNode->ToString() << logger.end;
 
-         while(!stream.atEnd()) {
-             int p;
-             //QString q;
-             stream >> p;
+        QItemSelectionModel* selectModel = gui->tv->selectionModel();
+        QModelIndexList indexes = selectModel->selectedIndexes();
+        foreach (QModelIndex index, indexes) {
+            ISceneNode* node = (ISceneNode*)(index.internalPointer());
+            
+            logger.info << "Dropped: " <<  node->GetClassName() << logger.end;           
+            beginRemoveRows(index.parent(), index.row(), index.row());
              
-             //ISceneNode* node;
-             //node = (ISceneNode*)p;
-             QPersistentModelIndex *pi = (QPersistentModelIndex*)p;
-             ISceneNode* node = (ISceneNode*)(pi->internalPointer());
+            node->GetParent()->RemoveNode(node);
+            endRemoveRows();
              
+            int nidx = parentNode->GetNumberOfNodes();
+            //logger.info << nidx << logger.end;
+            parentNode->AddNode(node);
+            beginInsertRows(parent, nidx, nidx);
              
-             // check cyclic!
-             
-             //int idx = node->GetParent()->IndexOfNode(node);
-             beginRemoveRows(pi->parent(), pi->row(), pi->row());
-             
-             node->GetParent()->RemoveNode(node);
-             endRemoveRows();
-
-             int nidx = parentNode->GetNumberOfNodes();
-             logger.info << nidx << logger.end;
-             parentNode->AddNode(node);
-             beginInsertRows(parent, nidx, nidx);
-             
-             endInsertRows();
-             
-             delete pi;
-
-             //logger.info << "removed " << idx  << logger.end;
-         }         
-         // logger.info << p << logger.end;         
-         // logger.info << "drop" << logger.end;
+            endInsertRows();
+        }
+         
          return true;
      }
 
@@ -244,7 +213,7 @@ using namespace Renderers;
     }
         
     void SceneGraphGUI::Handle(InitializeEventArg arg) {
-        model = new SceneModel(root);
+        model = new SceneModel(root,this);
         tv->setModel(model);
         QObject::connect(tv->selectionModel(), 
                          SIGNAL(selectionChanged(QItemSelection,QItemSelection)),

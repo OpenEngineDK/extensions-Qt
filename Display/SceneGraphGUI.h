@@ -33,10 +33,15 @@ class SceneGraphGUI : public QWidget
         friend class SceneGraphGUI;
         ISceneNode* root;
         QModelIndexList* lastIndexes;
+
+        SceneGraphGUI* gui;
+
+        //private:
+        //vector<pair<QPersistentModelIndex,ISceneNode*> > moveNodes;
         
 
     public:
-        SceneModel(ISceneNode* node);
+        SceneModel(ISceneNode* node, SceneGraphGUI* gui);
         ~SceneModel();
                 
         Qt::DropActions supportedDropActions() const;
