@@ -206,7 +206,7 @@ using namespace Renderers;
     }
 
     SceneGraphGUI::SceneGraphGUI(ISceneNode* n, TextureLoader* tl, SelectionSet<ISceneNode>& ss)
-        : root(n), textureLoader(tl), selectionList(ss) {
+        : root(n), textureLoader(tl), selectionList(ss), ignoredSelection(0) {
         Ui::SceneGraphGUI* ui = new Ui::SceneGraphGUI();
         ui->setupUi(this);
         tv = ui->treeView;
@@ -234,10 +234,19 @@ using namespace Renderers;
     }
     
     void SceneGraphGUI::Handle(SelectionSet<ISceneNode>::ChangedEventArg arg) {
-        if (arg.selection.size() == 1) {
-            QModelIndex idx = model->FindNode(*(arg.selection.begin()));
+        if (ignoredSelection) {
+            ignoredSelection--;
+            return;
+        }
+        tv->selectionModel()->clearSelection();
+        
+        for(set<ISceneNode*>::iterator itr = arg.selection.begin();
+            itr != arg.selection.end();
+            itr++) {            
+            QModelIndex idx = model->FindNode(*itr);
             tv->selectionModel()->select(idx, QItemSelectionModel::Select);
         }
+        logger.info << "Selection changed" << logger.end;
     }
 
     void SceneGraphGUI::select(const QItemSelection & selected, 
@@ -252,12 +261,12 @@ using namespace Renderers;
             
             model->FindNode(node);
 
-            //NodeSelectionEventArg arg;
-            //arg.node = node;
-            //selectionEvent.Notify(arg);
-            selectionList.Clear();
+            ignoredSelection++;
+            selectionList.Clear();         
             
+            ignoredSelection++;
             selectionList.Select(node);
+            
         }
         
     }

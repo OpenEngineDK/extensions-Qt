@@ -34,11 +34,7 @@ class SceneGraphGUI : public QWidget
         ISceneNode* root;
         QModelIndexList* lastIndexes;
 
-        SceneGraphGUI* gui;
-
-        //private:
-        //vector<pair<QPersistentModelIndex,ISceneNode*> > moveNodes;
-        
+        SceneGraphGUI* gui;        
 
     public:
         SceneModel(ISceneNode* node, SceneGraphGUI* gui);
@@ -63,6 +59,8 @@ class SceneGraphGUI : public QWidget
 
     };
     
+
+
     ISceneNode* root;
     SceneModel* model;
     QTreeView* tv;
@@ -86,6 +84,10 @@ public:
     void Handle(SelectionSet<ISceneNode>::ChangedEventArg arg);
 
     IEvent<SelectionSet<ISceneNode>::ChangedEventArg >& SelectionEvent();
+
+
+private:
+    unsigned int ignoredSelection;
     
 };
     
