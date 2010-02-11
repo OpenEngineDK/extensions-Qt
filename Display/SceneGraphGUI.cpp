@@ -45,10 +45,15 @@ using namespace Renderers;
         return mimeData;
     }
 
-    bool SceneGraphGUI::SceneModel::dropMimeData(const QMimeData *data,Qt::DropAction action, int row, int column, const QModelIndex &parent) {
-        
-        ISceneNode* parentNode = (ISceneNode*)parent.internalPointer();
-         
+    bool SceneGraphGUI::SceneModel::dropMimeData(const QMimeData *data,
+                                                 Qt::DropAction action, 
+                                                 int row,
+                                                 int column, 
+                                                 const QModelIndex &parent) {        
+        if (parent.row() < 0)
+            return false;        
+
+        ISceneNode* parentNode = (ISceneNode*)parent.internalPointer();         
         logger.info << "parent: " << parentNode->ToString() << logger.end;
 
         QItemSelectionModel* selectModel = gui->tv->selectionModel();
