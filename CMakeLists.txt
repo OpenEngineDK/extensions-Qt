@@ -47,4 +47,5 @@ ADD_LIBRARY(Extensions_Qt
 TARGET_LINK_LIBRARIES(Extensions_Qt
   ${QT_LIBRARIES}
   OpenEngine_Scene
+  Extensions_SDL # Needed for the joystick
 )
