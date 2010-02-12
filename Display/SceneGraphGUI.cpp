@@ -8,6 +8,8 @@
 #include <Resources/IModelResource.h>
 #include <Renderers/TextureLoader.h>
 
+#include <Resources/StreamArchive.h>
+
 #include <Logging/Logger.h>
 #include <stack>
 
@@ -17,6 +19,7 @@ namespace Display {
 
 using namespace Resources;
 using namespace Renderers;
+using namespace Utils;
 
     SceneGraphGUI::SceneModel::SceneModel(ISceneNode* node, SceneGraphGUI* gui)
         : QAbstractItemModel(), root(new SceneNode()), gui(gui) {
@@ -365,9 +368,28 @@ using namespace Renderers;
     }
 
     void SceneGraphGUI::SaveSceneNode() {
-        logger.info << "Saving a scene node is currently not implemented"
-                    << logger.end;
-    }
+        if (selectionList.GetSelection().size() != 1) {
+            logger.info << "Can only a single scene node."
+                        << logger.end;
+            return;
+        }
+        ISceneNode* selected = *selectionList.GetSelection().begin();
 
+        QString fileTmp = QFileDialog::getSaveFileName(this,
+                                                       tr("Save Scene"),
+                                                       QString(),
+                                                       tr("OE Scene (*.oes)"));
+        string file(fileTmp.toAscii().data());
+        
+        ofstream fs(file.c_str(), ios::out | ios::binary);
+        if (fs.fail()) {
+            logger.info << "Failed to open file: " << file
+                        << logger.end;
+            return;
+        }
+        StreamArchiveWriter w(fs);
+        w.WriteScene("scene",selected);
+        fs.close();        
+    }
 }
 }
