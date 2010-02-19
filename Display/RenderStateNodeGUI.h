@@ -22,6 +22,7 @@ public slots:
     void SetShader(int);
     void SetBackface(int);
     void SetLighting(int);
+    void SetColorMaterial(int);
     void SetDepthTest(int);
     void SetWireframe(int);
     void SetSoftNormal(int);

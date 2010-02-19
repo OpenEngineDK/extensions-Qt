@@ -1,284 +1,311 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>RenderStateNodeGUI</class>
- <widget class="QWidget" name="RenderStateNodeGUI" >
-  <property name="geometry" >
+ <widget class="QWidget" name="RenderStateNodeGUI">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1074</width>
-    <height>1005</height>
+    <width>362</width>
+    <height>493</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" >
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QGroupBox" name="groupBox" >
-     <property name="title" >
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
       <string>Render State Properties</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2" >
+     <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <layout class="QFormLayout" name="formLayout" >
-        <property name="labelAlignment" >
+       <layout class="QFormLayout" name="formLayout">
+        <property name="labelAlignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
-        <item row="0" column="0" >
-         <widget class="QLabel" name="label" >
-          <property name="text" >
+        <item row="0" column="0">
+         <widget class="QLabel" name="label">
+          <property name="text">
            <string>Textures</string>
           </property>
          </widget>
         </item>
-        <item row="1" column="0" >
-         <widget class="QLabel" name="label_2" >
-          <property name="text" >
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_2">
+          <property name="text">
            <string>Shaders</string>
           </property>
          </widget>
         </item>
-        <item row="3" column="0" >
-         <widget class="QLabel" name="label_3" >
-          <property name="text" >
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_3">
+          <property name="text">
            <string>Lighting</string>
           </property>
          </widget>
         </item>
-        <item row="1" column="1" >
-         <widget class="QComboBox" name="shader_state" >
+        <item row="1" column="1">
+         <widget class="QComboBox" name="shader_state">
           <item>
-           <property name="text" >
+           <property name="text">
             <string>Inherited</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>Enabled</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>Disabled</string>
            </property>
           </item>
          </widget>
         </item>
-        <item row="0" column="1" >
-         <widget class="QComboBox" name="texture_state" >
+        <item row="0" column="1">
+         <widget class="QComboBox" name="texture_state">
           <item>
-           <property name="text" >
+           <property name="text">
             <string>Inherited</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>Enabled</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>Disabled</string>
            </property>
           </item>
          </widget>
         </item>
-        <item row="9" column="1" >
-         <widget class="QComboBox" name="tangent_state" >
+        <item row="10" column="1">
+         <widget class="QComboBox" name="tangent_state">
           <item>
-           <property name="text" >
+           <property name="text">
             <string>Inherited</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>Enabled</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>Disabled</string>
            </property>
           </item>
          </widget>
         </item>
-        <item row="2" column="0" >
-         <widget class="QLabel" name="label_4" >
-          <property name="text" >
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_4">
+          <property name="text">
            <string>Backface</string>
           </property>
          </widget>
         </item>
-        <item row="2" column="1" >
-         <widget class="QComboBox" name="backface_state" >
+        <item row="2" column="1">
+         <widget class="QComboBox" name="backface_state">
           <item>
-           <property name="text" >
+           <property name="text">
             <string>Inherited</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>Enabled</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>Disabled</string>
            </property>
           </item>
          </widget>
         </item>
-        <item row="3" column="1" >
-         <widget class="QComboBox" name="lighting_state" >
-          <item>
-           <property name="text" >
-            <string>Inherited</string>
-           </property>
-          </item>
-          <item>
-           <property name="text" >
-            <string>Enabled</string>
-           </property>
-          </item>
-          <item>
-           <property name="text" >
-            <string>Disabled</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-        <item row="4" column="0" >
-         <widget class="QLabel" name="label_5" >
-          <property name="text" >
+        <item row="5" column="0">
+         <widget class="QLabel" name="label_5">
+          <property name="text">
            <string>Depth Test</string>
           </property>
          </widget>
         </item>
-        <item row="4" column="1" >
-         <widget class="QComboBox" name="depth_test_state" >
+        <item row="5" column="1">
+         <widget class="QComboBox" name="depth_test_state">
           <item>
-           <property name="text" >
+           <property name="text">
             <string>Inherited</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>Enabled</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>Disabled</string>
            </property>
           </item>
          </widget>
         </item>
-        <item row="5" column="0" >
-         <widget class="QLabel" name="label_6" >
-          <property name="text" >
+        <item row="6" column="0">
+         <widget class="QLabel" name="label_6">
+          <property name="text">
            <string>Wireframe</string>
           </property>
          </widget>
         </item>
-        <item row="5" column="1" >
-         <widget class="QComboBox" name="wireframe_state" >
+        <item row="6" column="1">
+         <widget class="QComboBox" name="wireframe_state">
           <item>
-           <property name="text" >
+           <property name="text">
             <string>Inherited</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>Enabled</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>Disabled</string>
            </property>
           </item>
          </widget>
         </item>
-        <item row="6" column="0" >
-         <widget class="QLabel" name="label_7" >
-          <property name="text" >
+        <item row="7" column="0">
+         <widget class="QLabel" name="label_7">
+          <property name="text">
            <string>Soft Normals</string>
           </property>
          </widget>
         </item>
-        <item row="6" column="1" >
-         <widget class="QComboBox" name="soft_normal_state" >
+        <item row="7" column="1">
+         <widget class="QComboBox" name="soft_normal_state">
           <item>
-           <property name="text" >
+           <property name="text">
             <string>Inherited</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>Enabled</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>Disabled</string>
            </property>
           </item>
          </widget>
         </item>
-        <item row="7" column="0" >
-         <widget class="QLabel" name="label_8" >
-          <property name="text" >
+        <item row="8" column="0">
+         <widget class="QLabel" name="label_8">
+          <property name="text">
            <string>Hard Normals</string>
           </property>
          </widget>
         </item>
-        <item row="8" column="0" >
-         <widget class="QLabel" name="label_9" >
-          <property name="text" >
+        <item row="9" column="0">
+         <widget class="QLabel" name="label_9">
+          <property name="text">
            <string>Binormals</string>
           </property>
          </widget>
         </item>
-        <item row="9" column="0" >
-         <widget class="QLabel" name="label_10" >
-          <property name="text" >
-           <string>Tangents</string>
-          </property>
-         </widget>
-        </item>
-        <item row="7" column="1" >
-         <widget class="QComboBox" name="hard_normal_state" >
+        <item row="8" column="1">
+         <widget class="QComboBox" name="hard_normal_state">
           <item>
-           <property name="text" >
+           <property name="text">
             <string>Inherited</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>Enabled</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>Disabled</string>
            </property>
           </item>
          </widget>
         </item>
-        <item row="8" column="1" >
-         <widget class="QComboBox" name="binormal_state" >
+        <item row="9" column="1">
+         <widget class="QComboBox" name="binormal_state">
           <item>
-           <property name="text" >
+           <property name="text">
             <string>Inherited</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>Enabled</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
+            <string>Disabled</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="10" column="0">
+         <widget class="QLabel" name="label_10">
+          <property name="text">
+           <string>Tangents</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_11">
+          <property name="text">
+           <string>Color Material</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QComboBox" name="lighting_state">
+          <item>
+           <property name="text">
+            <string>Inherited</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Enabled</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Disabled</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QComboBox" name="color_material_state">
+          <item>
+           <property name="text">
+            <string>Inherited</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Enabled</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
             <string>Disabled</string>
            </property>
           </item>
@@ -287,8 +314,8 @@
        </layout>
       </item>
       <item>
-       <widget class="QCheckBox" name="checkBox" >
-        <property name="text" >
+       <widget class="QCheckBox" name="checkBox">
+        <property name="text">
          <string>Show inherited properties</string>
         </property>
        </widget>
@@ -306,11 +333,11 @@
    <receiver>RenderStateNodeGUI</receiver>
    <slot>SetTexture(int)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>203</x>
      <y>48</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>220</x>
      <y>4</y>
     </hint>
@@ -322,11 +349,11 @@
    <receiver>RenderStateNodeGUI</receiver>
    <slot>SetShader(int)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>276</x>
      <y>81</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>310</x>
      <y>2</y>
     </hint>
@@ -338,11 +365,11 @@
    <receiver>RenderStateNodeGUI</receiver>
    <slot>SetBackface(int)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>242</x>
      <y>114</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>400</x>
      <y>7</y>
     </hint>
@@ -354,11 +381,11 @@
    <receiver>RenderStateNodeGUI</receiver>
    <slot>SetLighting(int)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>317</x>
      <y>147</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>501</x>
      <y>7</y>
     </hint>
@@ -370,11 +397,11 @@
    <receiver>RenderStateNodeGUI</receiver>
    <slot>SetDepthTest(int)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>425</x>
      <y>174</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>596</x>
      <y>5</y>
     </hint>
@@ -386,13 +413,29 @@
    <receiver>RenderStateNodeGUI</receiver>
    <slot>SetWireframe(int)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>520</x>
      <y>215</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>705</x>
      <y>8</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>color_material_state</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>RenderStateNodeGUI</receiver>
+   <slot>SetColorMaterial(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>232</x>
+     <y>166</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>180</x>
+     <y>246</y>
     </hint>
    </hints>
   </connection>
@@ -408,5 +451,6 @@
   <slot>SetHardNormal(int)</slot>
   <slot>SetBinormal(int)</slot>
   <slot>SetTangent(int)</slot>
+  <slot>SetColorMaterial(int)</slot>
  </slots>
 </ui>
