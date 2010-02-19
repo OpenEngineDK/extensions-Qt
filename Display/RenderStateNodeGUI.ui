@@ -325,6 +325,20 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>texture_state</tabstop>
+  <tabstop>shader_state</tabstop>
+  <tabstop>backface_state</tabstop>
+  <tabstop>lighting_state</tabstop>
+  <tabstop>color_material_state</tabstop>
+  <tabstop>depth_test_state</tabstop>
+  <tabstop>wireframe_state</tabstop>
+  <tabstop>soft_normal_state</tabstop>
+  <tabstop>hard_normal_state</tabstop>
+  <tabstop>binormal_state</tabstop>
+  <tabstop>tangent_state</tabstop>
+  <tabstop>checkBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
