@@ -11,14 +11,10 @@
 #define _OE_QT_FRAME_H_
 
 #include <Display/IFrame.h>
-//#include <Meta/SDL.h>
+#include <Display/ICanvas.h>
 
 namespace OpenEngine {
 namespace Display {
-
-using OpenEngine::Core::InitializeEventArg;
-using OpenEngine::Core::ProcessEventArg;
-using OpenEngine::Core::DeinitializeEventArg;
 
 /**
  * SDL implementation of IFrame.
@@ -27,12 +23,33 @@ using OpenEngine::Core::DeinitializeEventArg;
  */
 class QtFrame : public IFrame {
 private:
+    class FrameCanvas: public ICanvas {
+    private:
+        IFrame& frame;
+    public:
+        FrameCanvas(IFrame& frame): frame(frame) {}
+        virtual ~FrameCanvas() {}
+        unsigned int GetWidth() const { return frame.GetWidth(); }
+        unsigned int GetHeight() const { return frame.GetHeight(); }
+        void SetWidth(const unsigned int width) { frame.SetWidth(width); }
+        void SetHeight(const unsigned int height) { frame.SetHeight(height); }
+
+        void Handle(Display::InitializeEventArg arg) {}
+        void Handle(Display::DeinitializeEventArg arg) {}
+        void Handle(Display::ProcessEventArg arg) {}
+        void Handle(Display::ResizeEventArg arg) {}
+
+        ITexture2DPtr GetTexture() { return ITexture2DPtr(); }
+    };
     // Screen settings
     unsigned int width, height, depth;
     FrameOption options;
     bool init;
     
     void CreateSurface();
+
+    ICanvas* canvas;
+    FrameCanvas fc;
 
 public:
     /**
@@ -50,15 +67,18 @@ public:
     FrameOption GetOptions() const;
     bool GetOption(const FrameOption option) const;
 
-    void SetWidth(const int width);
-    void SetHeight(const int height);
-    void SetDepth(const int depth);
+    void SetWidth(const unsigned int width);
+    void SetHeight(const unsigned int height);
+    void SetDepth(const unsigned int depth);
     void SetOptions(const FrameOption options);
     void ToggleOption(const FrameOption option);
 
-    void Handle(InitializeEventArg arg);
-    void Handle(ProcessEventArg arg);
-    void Handle(DeinitializeEventArg arg);
+    void Handle(Core::InitializeEventArg arg);
+    void Handle(Core::ProcessEventArg arg);
+    void Handle(Core::DeinitializeEventArg arg);
+
+    void SetCanvas(ICanvas* canvas) { this->canvas = canvas; }
+    ICanvas* GetCanvas() { return canvas; }
 };
 
 } // NS Display

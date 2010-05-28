@@ -232,7 +232,7 @@ using namespace Utils;
 
     }
         
-    void SceneGraphGUI::Handle(InitializeEventArg arg) {
+    void SceneGraphGUI::Handle(Core::InitializeEventArg arg) {
         model = new SceneModel(root,this);
         tv->setModel(model);
         QObject::connect(tv->selectionModel(), 

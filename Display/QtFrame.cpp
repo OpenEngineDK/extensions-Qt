@@ -23,12 +23,14 @@ using std::string;
     
 QtFrame::QtFrame(int width, int height,
                  int depth, FrameOption options)
-    : IFrame(width, height, depth, options),
+    : //IFrame(width, height, depth, options),
       width(width),
       height(height),
       depth(depth),
       options(FrameOption(options|FRAME_OPENGL)),
-      init(false) {}
+      init(false),
+      fc(FrameCanvas(*this))
+{}
 
 QtFrame::~QtFrame() {
 
@@ -58,15 +60,15 @@ bool QtFrame::GetOption(const FrameOption option) const {
     return (option & GetOptions()) == option;
 }
 
-void QtFrame::SetWidth(const int width) {
+void QtFrame::SetWidth(const unsigned int width) {
     if (!init) this->width = width;
 }
 
-void QtFrame::SetHeight(const int height) {
+void QtFrame::SetHeight(const unsigned int height) {
     if (!init) this->height = height;
 }
 
-void QtFrame::SetDepth(const int depth) {
+void QtFrame::SetDepth(const unsigned int depth) {
     if (!init) this->depth = depth;
 }
 
@@ -134,7 +136,7 @@ void QtFrame::CreateSurface() {
     // app.exec();
 }
 
-void QtFrame::Handle(InitializeEventArg arg) {
+void QtFrame::Handle(Core::InitializeEventArg arg) {
     // Initialize the video frame
     //if (QT_Init(QT_INIT_VIDEO) < 0 )
     //throw Exception("QT_Init: " + string(QT_GetError()));
@@ -145,14 +147,14 @@ void QtFrame::Handle(InitializeEventArg arg) {
     init = true;
 }
 
-void QtFrame::Handle(ProcessEventArg arg) {
+void QtFrame::Handle(Core::ProcessEventArg arg) {
     // Start by flipping the screen which is the
     // result from last engine loop.
     //if (IsOptionSet(FRAME_OPENGL))
     //QT_GL_SwapBuffers();
 }
 
-void QtFrame::Handle(DeinitializeEventArg arg) {
+void QtFrame::Handle(Core::DeinitializeEventArg arg) {
     //QT_QuitSubSystem(QT_INIT_VIDEO);
 }
 
