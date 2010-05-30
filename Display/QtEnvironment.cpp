@@ -368,19 +368,21 @@ void QtEnvironment::Handle(Core::InitializeEventArg arg) {
     int major = QT_VERSION >> 16;
     int minor = (QT_VERSION >> 8) & 0xFF;
     logger.info << "Qt version: " << major << "." << minor << logger.end;
+    frame->Handle(arg);
 }
 
 void QtEnvironment::Handle(Core::ProcessEventArg arg) {
     app->processEvents();
     gl->swapBuffers();
     gl->joystick->Handle(arg);
+    frame->Handle(arg);
 }
 
 void QtEnvironment::Handle(Core::DeinitializeEventArg arg) {
-
+    frame->Handle(arg);
 }
 
-IFrame& QtEnvironment::GetFrame() {
+IFrame& QtEnvironment::CreateFrame() {
     return *frame;
 }
 

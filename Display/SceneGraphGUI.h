@@ -24,7 +24,7 @@ using namespace std;
 
 
 class SceneGraphGUI : public QWidget
-                    , public IListener<InitializeEventArg>
+                    , public IListener<Core::InitializeEventArg>
                     , public IListener<SelectionSet<ISceneNode >::ChangedEventArg > {
             
     Q_OBJECT;
@@ -80,7 +80,7 @@ public:
     SceneGraphGUI(ISceneNode* node, Renderers::TextureLoader* tl, SelectionSet<ISceneNode>& ss);
     ~SceneGraphGUI();
     
-    void Handle(InitializeEventArg arg);
+    void Handle(Core::InitializeEventArg arg);
     void Handle(SelectionSet<ISceneNode>::ChangedEventArg arg);
 
     IEvent<SelectionSet<ISceneNode>::ChangedEventArg >& SelectionEvent();

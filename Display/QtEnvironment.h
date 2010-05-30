@@ -49,7 +49,7 @@ public:
     void Handle(Core::ProcessEventArg arg);
     void Handle(Core::DeinitializeEventArg arg);
 
-    IFrame&             GetFrame();
+    IFrame&             CreateFrame();
     Devices::IMouse*    GetMouse();
     Devices::IKeyboard* GetKeyboard();
     Devices::IJoystick* GetJoystick();

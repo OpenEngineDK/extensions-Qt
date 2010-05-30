@@ -145,16 +145,23 @@ void QtFrame::Handle(Core::InitializeEventArg arg) {
 
     // Set the private initialization flag
     init = true;
+    ((IListener<Display::InitializeEventArg>*)canvas)->Handle(Display::InitializeEventArg(fc));
 }
 
 void QtFrame::Handle(Core::ProcessEventArg arg) {
     // Start by flipping the screen which is the
     // result from last engine loop.
     //if (IsOptionSet(FRAME_OPENGL))
+
+    ((IListener<Display::ProcessEventArg>*)canvas)->Handle(ProcessEventArg(fc, arg.start, arg.approx));
+
+
     //QT_GL_SwapBuffers();
 }
 
 void QtFrame::Handle(Core::DeinitializeEventArg arg) {
+    ((IListener<Display::DeinitializeEventArg>*)canvas)->Handle(DeinitializeEventArg(fc));
+
     //QT_QuitSubSystem(QT_INIT_VIDEO);
 }
 
