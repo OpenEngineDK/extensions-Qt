@@ -136,12 +136,12 @@ void SceneNodeGUI::SetNode(ISceneNode* node) {
     else setCurrentWidget(noneWidget);
 }
 
-    void SceneNodeGUI::Handle(SelectionSet<ISceneNode>::ChangedEventArg arg) {
-        if (arg.selection.size() == 1) {
-            ISceneNode* node = *(arg.selection.begin());
-            SetNode(node);
-        }
+void SceneNodeGUI::Handle(SelectionSet<ISceneNode>::ChangedEventArg arg) {
+    if (arg.selection.size() == 1) {
+        ISceneNode* node = *(arg.selection.begin());
+        SetNode(node);
     }
+}
 
 } // NS Display
 } // NS OpenEngine
