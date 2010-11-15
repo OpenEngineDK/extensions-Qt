@@ -39,7 +39,9 @@ public:
                   int width  = 640,
                   int height = 480,
                   int depth  = 32,
-                  FrameOption options = FrameOption());
+                  FrameOption options = FrameOption(),
+                  int argc=0,
+                  char* argv[] = NULL);
 
     virtual ~QtEnvironment();
 

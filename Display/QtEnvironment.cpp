@@ -321,12 +321,14 @@ QtEnvironment::QtEnvironment(bool mktop,
                              int width,
                              int height,
                              int depth,
-                             FrameOption options) {
+                             FrameOption options,
+                             int argc,
+                             char* argv[]) {
     // Create some dummy arguments
     // (must be valid throughout the life of the application)
-    int*  argc = new int(1);
-    char* argv = new char('\0');
-    app   = new QApplication(*argc, &argv);
+    //int*  argc = new int(1);
+    //char* argv = new char('\0');
+    app   = new QApplication(argc, argv);
     gl    = new GLWidget();
     frame = new QtFrame(width, height, depth, options);
 
