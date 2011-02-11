@@ -78,7 +78,7 @@ using namespace Utils;
             ISceneNode* node = (ISceneNode*)(index.internalPointer());
 
 
-            logger.info << "Dropped: " <<  node->GetNodeName() << logger.end;           
+            logger.info << "Dropped: " <<  node->GetTypeName() << logger.end;           
             beginRemoveRows(index.parent(), index.row(), index.row());
              
             node->GetParent()->RemoveNode(node);
@@ -118,7 +118,7 @@ using namespace Utils;
         //std::string* s = new string(item->node->GetClassName());
         
         //return QVariant(QString(s->c_str()));
-        return QString(item->GetNodeName().c_str());
+        return QString(item->GetTypeName().c_str());
     }
 
     QModelIndex SceneGraphGUI::SceneModel::index(int row, 

@@ -96,7 +96,7 @@ public:
     }
     void DefaultVisitNode(ISceneNode* node) {
         QString str("No display for node type:\n");
-        str.append(node->GetNodeName().c_str());
+        str.append(node->GetTypeName().c_str());
         widget->setText(str);
         gui.setCurrentWidget(widget);
     }
