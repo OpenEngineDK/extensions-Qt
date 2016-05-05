@@ -1,2 +1,2 @@
-darcs      /extensions/Qt            http://openengine.dk/code/extensions/Qt
-darcs-dev  /extensions/Qt            fh.daimi.au.dk:/users/cgd/code/extensions/Qt
+git      /extensions/Qt            https://github.com/OpenEngineDK/extensions-Qt.git
+git-dev  /extensions/Qt            git@github.com:OpenEngineDK/extensions-Qt.git
